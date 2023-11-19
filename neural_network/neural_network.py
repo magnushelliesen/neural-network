@@ -23,17 +23,19 @@ class NeuralNetwork():
         self._n_hidden = n_hidden
         self._dim_output = dim_output
 
-        # Setup nodes weights and biases
+        # Setup weights and biases for input layer
         self._w_i = np.ones((dim_hidden, dim_input))
         self._b_i = np.zeros(dim_input)
-        
+
+        # Setup weights and biases for hidden layers
         self._w_h = {}
         self._b_h = {}
         for i in range(self.n_hidden-1):
             self._w_h[i] = np.ones((dim_hidden, dim_hidden))
             self._b_h[i] = np.zeros(dim_hidden)
 
-        self._w_o = np.zeros((dim_hidden, dim_input))
+        # Setup weights and biases for output layer
+        self._w_o = np.zeros((dim_output, dim_hidden))
         self._b_o = np.zeros(dim_output)
 
     @property
@@ -87,8 +89,13 @@ class NeuralNetwork():
         if input.shape[0] != self.dim_input:
             raise IndexError(f'Input has dimenson {input.shape} and not {self.dim_input}')
 
-        # Will have to think about this a bit
-        return self.actiavtion_function(self.w_i.dot(input)+self.b_i)
+        # I will have to think about what to store of the calculations
+        x = self.actiavtion_function(self.w_i.dot(input)+self.b_i)
+
+        for i in range(self.n_hidden-1):
+            x = self.actiavtion_function(self.w_h.get(i).dot(x)+self.b_h.get(i))
+
+        return self.actiavtion_function(self.w_o.dot(x)+self.b_o)
 
     def train(self, data: dict):
         # I think the training data will be a dict of np.ndarrays
