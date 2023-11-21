@@ -9,6 +9,7 @@ class NeuralNetwork():
     """
     Docstring will come
     """
+
     def __init__(self,
                  dim_input: int,
                  dim_hidden: int,
@@ -18,6 +19,7 @@ class NeuralNetwork():
         """
         Docstring will come
         """
+
         self._dim_input = dim_input
         self._dim_hidden = dim_hidden
         self._n_hidden = n_hidden
@@ -79,24 +81,31 @@ class NeuralNetwork():
         return self._b_o
 
     @staticmethod
-    def actiavtion_function(x):
+    def _actiavtion_function(x):
+        """
+        Sigmoid activation function
+        """
         return 1/(1+np.exp(-x))
 
     def predict(self, input: np.ndarray):
         """
         Docstring will come
         """
+
         if input.shape[0] != self.dim_input:
             raise IndexError(f'Input has dimenson {input.shape} and not {self.dim_input}')
 
-        # I will have to think about what to store of the calculations
-        x = self.actiavtion_function(self.w_i.dot(input)+self.b_i)
+        # I will have to think about how much of the calculations to store
+        x = self._actiavtion_function(self.w_i.dot(input)+self.b_i)
 
         for i in range(self.n_hidden-1):
-            x = self.actiavtion_function(self.w_h.get(i).dot(x)+self.b_h.get(i))
+            x = self._actiavtion_function(self.w_h.get(i).dot(x)+self.b_h.get(i))
 
-        return self.actiavtion_function(self.w_o.dot(x)+self.b_o)
+        return self._actiavtion_function(self.w_o.dot(x)+self.b_o)
 
-    def train(self, data: dict):
-        # I think the training data will be a dict of np.ndarrays
-        pass
+    def train(self, input: np.ndarray, target: np.ndarray):
+        """
+        Docstring will come
+        """
+
+        output = self.predict(input)
