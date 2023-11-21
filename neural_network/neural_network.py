@@ -93,7 +93,9 @@ class NeuralNetwork():
         """
 
         if input.shape[0] != self.dim_input:
-            raise IndexError(f'Input has dimenson {input.shape} and not {self.dim_input}')
+            raise IndexError(f'Input must have {self.dim_input} rows, not {input.shape[0]}')
+        if len(input.shape) != 1:
+            raise IndexError('Input must be 1d array')
 
         # I will have to think about how much of the calculations to store
         x = self._actiavtion_function(self.w_i.dot(input)+self.b_i)
@@ -108,4 +110,7 @@ class NeuralNetwork():
         Docstring will come
         """
 
+        # Calculate the output given input to be compared with target
         output = self.predict(input)
+
+        # Here comes the backpropagation
