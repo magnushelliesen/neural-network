@@ -112,5 +112,6 @@ class NeuralNetwork():
 
         # Calculate the output given input to be compared with target
         output = self.predict(input)
+        loss = np.square(target-output)
 
         # Here comes the backpropagation
