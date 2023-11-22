@@ -87,7 +87,7 @@ class NeuralNetwork():
         """
         return 1/(1+np.exp(-x))
 
-    def predict(self, input: np.ndarray):
+    def _activation(self, input: np.ndarray):
         """
         Docstring will come
         """
@@ -97,21 +97,44 @@ class NeuralNetwork():
         if len(input.shape) != 1:
             raise IndexError('Input must be 1d array')
 
-        # I will have to think about how much of the calculations to store
+        # We store all the activation from the different layers in a tuple
+        activation = tuple()
+
         x = self._actiavtion_function(self.w_i.dot(input)+self.b_i)
+        activation += x,
 
         for i in range(self.n_hidden-1):
             x = self._actiavtion_function(self.w_h.get(i).dot(x)+self.b_h.get(i))
+            activation += x,
 
-        return self._actiavtion_function(self.w_o.dot(x)+self.b_o)
+        x = self._actiavtion_function(self.w_o.dot(x)+self.b_o)
+        activation += x,
+
+        # We return the tuple in reverse order (output first)
+        return activation[::-1]
+
+    def predict(self, input: np.ndarray):
+        """
+        Docstring will come
+        """
+
+        return self._activation(input)[0]
 
     def train(self, input: np.ndarray, target: np.ndarray):
         """
         Docstring will come
         """
+        
+        activation = self._activation(input)
 
         # Calculate the output given input to be compared with target
-        output = self.predict(input)
+        output = activation[0]
         loss = np.square(target-output)
+
+        # Calculate the derivative of the loss function for the output layer
+        delta_o = (output-target)*output*(1-output)
+        activation_o = activation[1]
+        
+        print(np.outer(delta_o, activation_o))
 
         # Here comes the backpropagation
