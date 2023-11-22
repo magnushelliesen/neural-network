@@ -134,7 +134,11 @@ class NeuralNetwork():
         # Calculate the derivative of the loss function for the output layer
         delta_o = (output-target)*output*(1-output)
         activation_o = activation[1]
-        
-        print(np.outer(delta_o, activation_o))
 
-        # Here comes the backpropagation
+        # Calculate the derivative as outer product
+        delta_loss = np.outer(delta_o, activation_o)
+
+        # Update weights
+        self._w_o -= delta_loss
+
+        # What about the bias?
