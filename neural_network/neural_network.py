@@ -26,14 +26,14 @@ class NeuralNetwork():
         self._dim_output = dim_output
 
         # Setup weights and biases for input layer
-        self._w_i = np.ones((dim_hidden, dim_input))
+        self._w_i = np.zeros((dim_hidden, dim_input))
         self._b_i = np.zeros(dim_input)
 
         # Setup weights and biases for hidden layers
         self._w_h = {}
         self._b_h = {}
         for i in range(self.n_hidden-1):
-            self._w_h[i] = np.ones((dim_hidden, dim_hidden))
+            self._w_h[i] = np.zeros((dim_hidden, dim_hidden))
             self._b_h[i] = np.zeros(dim_hidden)
 
         # Setup weights and biases for output layer
@@ -120,25 +120,22 @@ class NeuralNetwork():
 
         return self._activation(input)[0]
 
-    def train(self, input: np.ndarray, target: np.ndarray):
+    def train(self, input: np.ndarray, target: np.ndarray, step=1):
         """
         Docstring will come
         """
         
         activation = self._activation(input)
 
-        # Calculate the output given input to be compared with target
         output = activation[0]
-        loss = np.square(target-output)
 
-        # Calculate the derivative of the loss function for the output layer
         delta_o = (output-target)*output*(1-output)
         activation_o = activation[1]
 
-        # Calculate the derivative as outer product
         delta_loss = np.outer(delta_o, activation_o)
 
         # Update weights
         self._w_o -= delta_loss
 
-        # What about the bias?
+        # What about the bias? I think this is it
+        self._b_o -= delta_o
