@@ -88,7 +88,6 @@ class NeuralNetwork():
         activation = tuple()
 
         for weights, biases in zip(self.weights, self.biases):
-            
             x = self._actiavtion_function(weights.dot(x)+biases)
             activation += x,
 
