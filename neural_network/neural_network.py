@@ -109,13 +109,23 @@ class NeuralNetwork():
 
         output = activation[-1]
 
-        delta_o = (output-target)*output*(1-output)
-        activation_o = activation[-2]
+        # This is ugly and needs refactoring, but is close
+        ##################################################
+        for i, layers in enumerate(activation[::-1]):
+            if i == 0:
+                delta_o = (output-target)*output*(1-output)
+            else:
+                delta_o = (delta_o.dot(self.weights[-i])).T*activation[-1-i]*(1-activation[-1-i])
 
-        delta_loss = np.outer(delta_o, activation_o)
+            try:
+                activation_o = activation[-2-i]
+            except IndexError:
+                activation_o = input
+            delta_loss = np.outer(delta_o, activation_o)
 
-        # Update weights
-        self._weights[-1] -= delta_loss
-
-        # What about the bias? I think this is it
-        self._biases[-1] -= delta_o
+            # Update weights
+            self._weights[-i-1] -= delta_loss
+            
+            # What about the bias? I think this is it
+            self._biases[-i-1] -= delta_o
+        ##################################################
