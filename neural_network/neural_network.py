@@ -124,8 +124,8 @@ class NeuralNetwork():
             delta_loss = np.outer(delta_o, activation_o)
 
             # Update weights
-            self._weights[-i-1] -= delta_loss
+            self._weights[-i-1] -= step*delta_loss
             
             # What about the bias? I think this is it
-            self._biases[-i-1] -= delta_o
+            self._biases[-i-1] -= step*delta_o
         ##################################################
