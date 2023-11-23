@@ -35,8 +35,8 @@ class NeuralNetwork():
 
         # Setup weights and biases between hidden layers
         for i in range(self.n_hidden-1):
-            self._weights += np.zeros((dim_hidden, dim_input)),
-            self._biases += np.zeros(dim_input),
+            self._weights += np.zeros((dim_hidden, dim_hidden)),
+            self._biases += np.zeros(dim_hidden),
 
         # Setup weights and biases from last hidden layer to output layer
         self._weights += np.zeros((dim_output, dim_hidden)),
@@ -87,8 +87,8 @@ class NeuralNetwork():
         x = input
         activation = tuple()
 
-        for i in range(self.n_hidden-1):
-            x = self._actiavtion_function(self.weights[i].dot(x)+self.biases[i])
+        for weights, biases in zip(self.weights, self.biases):
+            x = self._actiavtion_function(weights.dot(x)+biases)
             activation += x,
 
         return activation
@@ -107,15 +107,15 @@ class NeuralNetwork():
         
         activation = self._activation(input)
 
-        output = activation[0]
+        output = activation[-1]
 
         delta_o = (output-target)*output*(1-output)
-        activation_o = activation[1]
+        activation_o = activation[-2]
 
         delta_loss = np.outer(delta_o, activation_o)
 
         # Update weights
-        self._w_o -= delta_loss
+        self._weights[-1] -= delta_loss
 
         # What about the bias? I think this is it
-        self._b_o -= delta_o
+        self._biases[-1] -= delta_o
