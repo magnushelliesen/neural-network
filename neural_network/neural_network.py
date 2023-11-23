@@ -25,20 +25,22 @@ class NeuralNetwork():
         self._n_hidden = n_hidden
         self._dim_output = dim_output
 
-        # Setup weights and biases for input layer
-        self._w_i = np.zeros((dim_hidden, dim_input))
-        self._b_i = np.zeros(dim_input)
+        # Setup weights and biases
+        self._weights = []
+        self._biases = []
 
-        # Setup weights and biases for hidden layers
-        self._w_h = {}
-        self._b_h = {}
+        # Setup weights and biases from input layer to first hidden layer
+        self._weights += np.zeros((dim_hidden, dim_input)),
+        self._biases += np.zeros(dim_hidden),
+
+        # Setup weights and biases between hidden layers
         for i in range(self.n_hidden-1):
-            self._w_h[i] = np.zeros((dim_hidden, dim_hidden))
-            self._b_h[i] = np.zeros(dim_hidden)
+            self._weights += np.zeros((dim_hidden, dim_hidden)),
+            self._biases += np.zeros(dim_hidden),
 
-        # Setup weights and biases for output layer
-        self._w_o = np.zeros((dim_output, dim_hidden))
-        self._b_o = np.zeros(dim_output)
+        # Setup weights and biases from last hidden layer to output layer
+        self._weights += np.zeros((dim_output, dim_hidden)),
+        self._biases += np.zeros(dim_output),
 
     @property
     def dim_input(self):
@@ -57,28 +59,12 @@ class NeuralNetwork():
         return self.dim_output
 
     @property
-    def w_i(self):
-        return self._w_i
+    def weights(self):
+        return self._weights
 
     @property
-    def b_i(self):
-        return self._b_i
-
-    @property
-    def w_h(self):
-        return self._w_h
-
-    @property
-    def b_h(self):
-        return self._b_h
-
-    @property
-    def w_o(self):
-        return self._w_o
-
-    @property
-    def b_o(self):
-        return self._b_o
+    def biases(self):
+        return self._biases
 
     @staticmethod
     def _actiavtion_function(x):
@@ -98,27 +84,21 @@ class NeuralNetwork():
             raise IndexError('Input must be 1d array')
 
         # We store all the activation from the different layers in a tuple
+        x = input
         activation = tuple()
 
-        x = self._actiavtion_function(self.w_i.dot(input)+self.b_i)
-        activation += x,
-
-        for i in range(self.n_hidden-1):
-            x = self._actiavtion_function(self.w_h.get(i).dot(x)+self.b_h.get(i))
+        for weights, biases in zip(self.weights, self.biases):
+            x = self._actiavtion_function(weights.dot(x)+biases)
             activation += x,
 
-        x = self._actiavtion_function(self.w_o.dot(x)+self.b_o)
-        activation += x,
-
-        # We return the tuple in reverse order (output first)
-        return activation[::-1]
+        return activation
 
     def predict(self, input: np.ndarray):
         """
         Docstring will come
         """
 
-        return self._activation(input)[0]
+        return self._activation(input)[-1]
 
     def train(self, input: np.ndarray, target: np.ndarray, step=1):
         """
@@ -127,15 +107,25 @@ class NeuralNetwork():
         
         activation = self._activation(input)
 
-        output = activation[0]
+        output = activation[-1]
 
-        delta_o = (output-target)*output*(1-output)
-        activation_o = activation[1]
+        # This is ugly and needs refactoring, but is close
+        ##################################################
+        for i, layers in enumerate(activation[::-1]):
+            if i == 0:
+                delta_o = (output-target)*output*(1-output)
+            else:
+                delta_o = (delta_o.dot(self.weights[-i])).T*activation[-1-i]*(1-activation[-1-i])
 
-        delta_loss = np.outer(delta_o, activation_o)
+            try:
+                activation_o = activation[-2-i]
+            except IndexError:
+                activation_o = input
+            delta_loss = np.outer(delta_o, activation_o)
 
-        # Update weights
-        self._w_o -= delta_loss
-
-        # What about the bias? I think this is it
-        self._b_o -= delta_o
+            # Update weights
+            self._weights[-i-1] -= delta_loss
+            
+            # What about the bias? I think this is it
+            self._biases[-i-1] -= delta_o
+        ##################################################
