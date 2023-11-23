@@ -39,8 +39,8 @@ class NeuralNetwork():
             self._biases += np.zeros(dim_input),
 
         # Setup weights and biases from last hidden layer to output layer
-        self._weights = np.zeros((dim_output, dim_hidden)),
-        self._biases = np.zeros(dim_output),
+        self._weights += np.zeros((dim_output, dim_hidden)),
+        self._biases += np.zeros(dim_output),
 
     @property
     def dim_input(self):
