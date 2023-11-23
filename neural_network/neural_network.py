@@ -84,27 +84,21 @@ class NeuralNetwork():
             raise IndexError('Input must be 1d array')
 
         # We store all the activation from the different layers in a tuple
+        x = input
         activation = tuple()
 
-        x = self._actiavtion_function(self.w_i.dot(input)+self.b_i)
-        activation += x,
-
         for i in range(self.n_hidden-1):
-            x = self._actiavtion_function(self.w_h.get(i).dot(x)+self.b_h.get(i))
+            x = self._actiavtion_function(self.weights[i].dot(x)+self.biases[i])
             activation += x,
 
-        x = self._actiavtion_function(self.w_o.dot(x)+self.b_o)
-        activation += x,
-
-        # We return the tuple in reverse order (output first)
-        return activation[::-1]
+        return activation
 
     def predict(self, input: np.ndarray):
         """
         Docstring will come
         """
 
-        return self._activation(input)[0]
+        return self._activation(input)[-1]
 
     def train(self, input: np.ndarray, target: np.ndarray, step=1):
         """
