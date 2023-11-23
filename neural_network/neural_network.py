@@ -31,7 +31,7 @@ class NeuralNetwork():
 
         # Setup weights and biases from input layer to first hidden layer
         self._weights += np.zeros((dim_hidden, dim_input)),
-        self._biases += np.zeros(dim_input),
+        self._biases += np.zeros(dim_hidden),
 
         # Setup weights and biases between hidden layers
         for i in range(self.n_hidden-1):
@@ -88,6 +88,7 @@ class NeuralNetwork():
         activation = tuple()
 
         for weights, biases in zip(self.weights, self.biases):
+            
             x = self._actiavtion_function(weights.dot(x)+biases)
             activation += x,
 
