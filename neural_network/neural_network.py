@@ -25,20 +25,22 @@ class NeuralNetwork():
         self._n_hidden = n_hidden
         self._dim_output = dim_output
 
-        # Setup weights and biases for input layer
-        self._w_i = np.zeros((dim_hidden, dim_input))
-        self._b_i = np.zeros(dim_input)
+        # Setup weights and biases
+        self._weights = []
+        self._biases = []
 
-        # Setup weights and biases for hidden layers
-        self._w_h = {}
-        self._b_h = {}
+        # Setup weights and biases from input layer to first hidden layer
+        self._weights += np.zeros((dim_hidden, dim_input)),
+        self._biases += np.zeros(dim_input),
+
+        # Setup weights and biases between hidden layers
         for i in range(self.n_hidden-1):
-            self._w_h[i] = np.zeros((dim_hidden, dim_hidden))
-            self._b_h[i] = np.zeros(dim_hidden)
+            self._weights += np.zeros((dim_hidden, dim_input)),
+            self._biases += np.zeros(dim_input),
 
-        # Setup weights and biases for output layer
-        self._w_o = np.zeros((dim_output, dim_hidden))
-        self._b_o = np.zeros(dim_output)
+        # Setup weights and biases from last hidden layer to output layer
+        self._weights = np.zeros((dim_output, dim_hidden)),
+        self._biases = np.zeros(dim_output),
 
     @property
     def dim_input(self):
@@ -57,28 +59,12 @@ class NeuralNetwork():
         return self.dim_output
 
     @property
-    def w_i(self):
-        return self._w_i
+    def weights(self):
+        return self._weights
 
     @property
-    def b_i(self):
-        return self._b_i
-
-    @property
-    def w_h(self):
-        return self._w_h
-
-    @property
-    def b_h(self):
-        return self._b_h
-
-    @property
-    def w_o(self):
-        return self._w_o
-
-    @property
-    def b_o(self):
-        return self._b_o
+    def biases(self):
+        return self._biases
 
     @staticmethod
     def _actiavtion_function(x):
