@@ -67,11 +67,25 @@ class NeuralNetwork():
         return self._biases
 
     @staticmethod
-    def _actiavtion_function(x):
+    def _sigmoid(x):
         """
         Sigmoid activation function
         """
         return 1/(1+np.exp(-x))
+
+    @staticmethod
+    def _relu(x):
+        """
+        ReLU activation function
+        """
+        return np.maximum(x, 0)
+
+    @staticmethod
+    def _softmax(x):
+        """
+        Softmax activation function
+        """
+        return np.exp(x)/np.exp(x).sum()
 
     def _activation(self, input: np.ndarray):
         """
@@ -87,8 +101,12 @@ class NeuralNetwork():
         x = input
         activation = tuple()
 
-        for weights, biases in zip(self.weights, self.biases):
-            x = self._actiavtion_function(weights.dot(x)+biases)
+        for i, (weights, biases) in enumerate(zip(self.weights, self.biases)):
+            if i < self.n_hidden:
+                x = self._relu(weights.dot(x)+biases)
+            else:
+                x = self._softmax(weights.dot(x)+biases)
+
             activation += x,
 
         return activation
