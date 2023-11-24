@@ -30,17 +30,17 @@ class NeuralNetwork():
         self._biases = []
 
         # Setup weights and biases from input layer to first hidden layer
-        self._weights += np.random.rand(dim_hidden, dim_input)/self.dim_input,
-        self._biases += np.random.rand(dim_hidden)/self.dim_input,
+        self._weights += (np.random.rand(dim_hidden, dim_input)-0.5)/self.dim_input,
+        self._biases += (np.random.rand(dim_hidden)-0.5)/self.dim_input,
 
         # Setup weights and biases between hidden layers
         for i in range(self.n_hidden-1):
-            self._weights += np.random.rand(dim_hidden, dim_hidden)/self.dim_hidden,
-            self._biases += np.random.rand(dim_hidden)/self.dim_hidden,
+            self._weights += (np.random.rand(dim_hidden, dim_hidden)-0.5)/self.dim_hidden,
+            self._biases += (np.random.rand(dim_hidden)-0.5)/self.dim_hidden,
 
         # Setup weights and biases from last hidden layer to output layer
-        self._weights += np.random.rand(dim_output, dim_hidden)/self.dim_hidden,
-        self._biases += np.random.rand(dim_output)/self.dim_hidden,
+        self._weights += (np.random.rand(dim_output, dim_hidden)-0.5)/self.dim_hidden,
+        self._biases += (np.random.rand(dim_output)-0.5)/self.dim_hidden,
 
     @property
     def dim_input(self):
