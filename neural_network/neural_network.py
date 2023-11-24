@@ -104,6 +104,7 @@ class NeuralNetwork():
         x = input
         activation = tuple()
 
+        # Forwardpropagation
         for i, (weights, biases) in enumerate(zip(self.weights, self.biases)):
             if i < self.n_hidden:
                 x = self._relu(weights.dot(x)+biases)
