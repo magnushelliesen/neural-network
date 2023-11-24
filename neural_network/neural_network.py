@@ -126,18 +126,17 @@ class NeuralNetwork():
         """
         Docstring will come
         """
-        
-        act = self._activation(input)
-        act = tuple(input)+act
+
+        act = tuple(input, *self._activation(input))
 
         i = self.n_hidden
         while True:
             if i == 0:
                 break
             if i == self.n_hidden:
-                delta = (act[i+1]-target)*act[i+1]*(1-act[i+1])
+                delta = act[i+1]-target
             else:
-                delta = delta.dot(self.weights[i+1]).T*act[i+1]*(1-act[i+1])
+                delta = delta.dot(self.weights[i+1]).T*(act[i+1]>0)
 
             self._weights[i] -= step*np.outer(delta, act[i])
             self._biases[i] -= step*delta
