@@ -30,8 +30,8 @@ class NeuralNetwork():
         self._biases = []
 
         # Setup weights and biases from input layer to first hidden layer
-        self._weights += (np.random.rand(dim_hidden, dim_input)-0.5)/self.dim_input,
-        self._biases += (np.random.rand(dim_hidden)-0.5)/self.dim_input,
+        self._weights += (np.random.rand(dim_hidden, dim_input)-0.5)/self.dim_hidden,
+        self._biases += (np.random.rand(dim_hidden)-0.5)/self.dim_hidden,
 
         # Setup weights and biases between hidden layers
         for i in range(self.n_hidden-1):
@@ -39,8 +39,8 @@ class NeuralNetwork():
             self._biases += (np.random.rand(dim_hidden)-0.5)/self.dim_hidden,
 
         # Setup weights and biases from last hidden layer to output layer
-        self._weights += (np.random.rand(dim_output, dim_hidden)-0.5)/self.dim_hidden,
-        self._biases += (np.random.rand(dim_output)-0.5)/self.dim_hidden,
+        self._weights += (np.random.rand(dim_output, dim_hidden)-0.5)/self.dim_output,
+        self._biases += (np.random.rand(dim_output)-0.5)/self.dim_output,
 
     @property
     def dim_input(self):
@@ -56,7 +56,7 @@ class NeuralNetwork():
 
     @property
     def dim_output(self):
-        return self.dim_output
+        return self._dim_output
 
     @property
     def weights(self):
@@ -141,7 +141,7 @@ class NeuralNetwork():
                 else:
                     delta[j] = delta[j].dot(self.weights[i+1]).T*(activation[i]>0)
 
-            self._biases[i] -= step*sum(delta)
+            self._biases[i] -= step*sum(delta)/n
             if i == 1:
                 self._weights[i] -= step*np.outer(sum(delta), sum(input))/n
             else:
