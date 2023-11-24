@@ -71,6 +71,7 @@ class NeuralNetwork():
         """
         Sigmoid activation function
         """
+
         return 1/(1+np.exp(-x))
 
     @staticmethod
@@ -78,6 +79,7 @@ class NeuralNetwork():
         """
         ReLU activation function
         """
+
         return np.maximum(x, 0)
 
     @staticmethod
@@ -85,6 +87,7 @@ class NeuralNetwork():
         """
         Softmax activation function
         """
+
         return np.exp(x)/np.exp(x).sum()
 
     def _activation(self, input: np.ndarray):
