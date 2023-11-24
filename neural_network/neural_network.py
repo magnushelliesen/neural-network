@@ -105,27 +105,21 @@ class NeuralNetwork():
         Docstring will come
         """
         
-        activation = self._activation(input)
+        act = self._activation(input)
+        act = tuple(input)+act
 
-        output = activation[-1]
-
-        # This is ugly and needs refactoring, but is close
-        ##################################################
-        for i, layers in enumerate(activation[::-1]):
+        i = self.n_hidden
+        while True:
             if i == 0:
-                delta_o = (output-target)*output*(1-output)
+                break
+            if i == self.n_hidden:
+                delta = (act[i+1]-target)*act[i+1]*(1-act[i+1])
             else:
-                delta_o = (delta_o.dot(self.weights[-i])).T*activation[-1-i]*(1-activation[-1-i])
+                delta = delta.dot(self.weights[i+1]).T*act[i+1]*(1-act[i+1])
 
-            try:
-                activation_o = activation[-2-i]
-            except IndexError:
-                activation_o = input
-            delta_loss = np.outer(delta_o, activation_o)
+            Delta = np.outer(delta, act[i])
 
-            # Update weights
-            self._weights[-i-1] -= step*delta_loss
-            
-            # What about the bias? I think this is it
-            self._biases[-i-1] -= step*delta_o
-        ##################################################
+            self._weights[i] -= step*Delta
+            self._biases[i] -= step*delta
+
+            i -= 1
