@@ -122,23 +122,28 @@ class NeuralNetwork():
 
         return self._activation(input)[-1]
 
-    def train(self, input: np.ndarray, target: np.ndarray, step=1):
+    def train(self, data: tuple(tuple()), step=1):
         """
         Docstring will come
         """
 
-        act = tuple([input, *self._activation(input)])
+        activations = tuple(self._activation(x[0]) for x in data)
 
         i = self.n_hidden
+        delta = []
         while True:
             if i == 0:
                 break
-            if i == self.n_hidden:
-                delta = act[i+1]-target
-            else:
-                delta = delta.dot(self.weights[i+1]).T*(act[i+1]>0)
+            for j, ((input, target), activation) in enumerate(zip(data, activations)):
+                if i == self.n_hidden:
+                    delta += activation[i]-target,
+                else:
+                    delta[j] = delta[j].dot(self.weights[i+1]).T*(activation[i]>0)
 
-            self._weights[i] -= step*np.outer(delta, act[i])
-            self._biases[i] -= step*delta
+            self._biases[i] -= step*sum(delta)
+            if i == 1:
+                self._weights[i] -= step*np.outer(sum(delta), sum(input))
+            else:
+                self._weights[i] -= step*np.outer(sum(delta), sum(x[i-1] for x in activations))
 
             i -= 1
