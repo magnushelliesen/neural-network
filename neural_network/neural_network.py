@@ -117,9 +117,7 @@ class NeuralNetwork():
             else:
                 delta = delta.dot(self.weights[i+1]).T*act[i+1]*(1-act[i+1])
 
-            Delta = np.outer(delta, act[i])
-
-            self._weights[i] -= step*Delta
+            self._weights[i] -= step*np.outer(delta, act[i])
             self._biases[i] -= step*delta
 
             i -= 1
