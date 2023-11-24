@@ -30,17 +30,17 @@ class NeuralNetwork():
         self._biases = []
 
         # Setup weights and biases from input layer to first hidden layer
-        self._weights += np.random.normal(size=(dim_hidden, dim_input))/self.dim_input,
-        self._biases += np.random.normal(size=dim_hidden)/self.dim_input,
+        self._weights += np.random.rand(dim_hidden, dim_input)/self.dim_input,
+        self._biases += np.random.rand(dim_hidden)/self.dim_input,
 
         # Setup weights and biases between hidden layers
         for i in range(self.n_hidden-1):
-            self._weights += np.random.normal(size=(dim_hidden, dim_hidden))/self.dim_hidden,
-            self._biases += np.random.normal(size=dim_hidden)/self.dim_hidden,
+            self._weights += np.random.rand(dim_hidden, dim_hidden)/self.dim_hidden,
+            self._biases += np.random.rand(dim_hidden)/self.dim_hidden,
 
         # Setup weights and biases from last hidden layer to output layer
-        self._weights += np.random.normal(size=(dim_output, dim_hidden))/self.dim_hidden,
-        self._biases += np.random.normal(size=dim_output)/self.dim_hidden,
+        self._weights += np.random.rand(dim_output, dim_hidden)/self.dim_hidden,
+        self._biases += np.random.rand(dim_output)/self.dim_hidden,
 
     @property
     def dim_input(self):
@@ -122,23 +122,29 @@ class NeuralNetwork():
 
         return self._activation(input)[-1]
 
-    def train(self, input: np.ndarray, target: np.ndarray, step=1):
+    def train(self, data: tuple(tuple()), step=1):
         """
         Docstring will come
         """
 
-        act = tuple([input, *self._activation(input)])
+        n = len(data)
+        activations = tuple(self._activation(x[0]) for x in data)
 
         i = self.n_hidden
+        delta = []
         while True:
             if i == 0:
                 break
-            if i == self.n_hidden:
-                delta = act[i+1]-target
-            else:
-                delta = delta.dot(self.weights[i+1]).T*(act[i+1]>0)
+            for j, ((input, target), activation) in enumerate(zip(data, activations)):
+                if i == self.n_hidden:
+                    delta += activation[i]-target,
+                else:
+                    delta[j] = delta[j].dot(self.weights[i+1]).T*(activation[i]>0)
 
-            self._weights[i] -= step*np.outer(delta, act[i])
-            self._biases[i] -= step*delta
+            self._biases[i] -= step*sum(delta)
+            if i == 1:
+                self._weights[i] -= step*np.outer(sum(delta), sum(input))/n
+            else:
+                self._weights[i] -= step*np.outer(sum(delta), sum(x[i-1] for x in activations))/n
 
             i -= 1
