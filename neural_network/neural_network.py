@@ -127,7 +127,7 @@ class NeuralNetwork():
         Docstring will come
         """
 
-        act = tuple(input, *self._activation(input))
+        act = tuple([input, *self._activation(input)])
 
         i = self.n_hidden
         while True:
