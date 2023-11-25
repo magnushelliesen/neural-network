@@ -42,6 +42,10 @@ class NeuralNetwork():
         self._weights += (np.random.rand(dim_output, dim_hidden)-0.5)/self.dim_output,
         self._biases += (np.random.rand(dim_output)-0.5)/self.dim_output,
 
+        # Storing initial weigths and biases
+        self._weights0 = tuple(x.copy() for x in self.weights)
+        self._biases0 = tuple(x.copy() for x in self.biases)
+
     @property
     def dim_input(self):
         return self._dim_input
@@ -65,6 +69,14 @@ class NeuralNetwork():
     @property
     def biases(self):
         return self._biases
+
+    @property
+    def weights0(self):
+        return self._weights0
+
+    @property
+    def biases0(self):
+        return self._biases0
 
     @staticmethod
     def _sigmoid(x):
@@ -127,23 +139,23 @@ class NeuralNetwork():
         Docstring will come
         """
 
+        n = len(data)
         activations = tuple(self._activations(x[0]) for x in data)
 
         i = self.n_hidden
         delta = []
         while True:
-            if i == 0:
-                break
-            for j, ((input, target), activation) in enumerate(zip(data, activations)):
+            for j, ((_, target), activation) in enumerate(zip(data, activations)):
                 if i == self.n_hidden:
                     delta += activation[i]-target,
                 else:
                     delta[j] = delta[j].dot(self.weights[i+1]).T*(activation[i]>0)
 
-            self._biases[i] -= step*np.mean(delta)
-            if i == 1:
-                self._weights[i] -= step*np.outer(np.mean(delta), np.mean(input))
+            self._biases[i] -= step*sum(delta)/n
+            if i == 0:
+                self._weights[i] -= step*np.outer(sum(delta)/n, sum(x[0] for x in data)/n)
+                break
             else:
-                self._weights[i] -= step*np.outer(np.mean(delta), np.mean(x[i-1] for x in activations))
+                self._weights[i] -= step*np.outer(sum(delta)/n, sum(x[i-1] for x in activations)/n)
 
             i -= 1
