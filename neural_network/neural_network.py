@@ -142,9 +142,8 @@ class NeuralNetwork():
         n = len(data)
         activations = tuple(self._activations(x[0]) for x in data)
 
-        i = self.n_hidden
         delta = []
-        while True:
+        for i in reversed(range(self.n_hidden+1)):
             for j, ((_, target), activation) in enumerate(zip(data, activations)):
                 if i == self.n_hidden:
                     delta += activation[i]-target,
@@ -154,8 +153,5 @@ class NeuralNetwork():
             self._biases[i] -= step*sum(delta)/n
             if i == 0:
                 self._weights[i] -= step*np.outer(sum(delta), sum(x[0] for x in data))/n
-                break
             else:
                 self._weights[i] -= step*np.outer(sum(delta), sum(x[i-1] for x in activations))/n
-
-            i -= 1
