@@ -90,7 +90,7 @@ class NeuralNetwork():
 
         return np.exp(x)/np.exp(x).sum()
 
-    def _activation(self, input: np.ndarray):
+    def _activations(self, input: np.ndarray):
         """
         Docstring will come
         """
@@ -120,15 +120,14 @@ class NeuralNetwork():
         Docstring will come
         """
 
-        return self._activation(input)[-1]
+        return self._activations(input)[-1]
 
     def train(self, data: tuple(tuple()), step=1):
         """
         Docstring will come
         """
 
-        n = len(data)
-        activations = tuple(self._activation(x[0]) for x in data)
+        activations = tuple(self._activations(x[0]) for x in data)
 
         i = self.n_hidden
         delta = []
@@ -141,10 +140,10 @@ class NeuralNetwork():
                 else:
                     delta[j] = delta[j].dot(self.weights[i+1]).T*(activation[i]>0)
 
-            self._biases[i] -= step*sum(delta)/n
+            self._biases[i] -= step*np.mean(delta)
             if i == 1:
-                self._weights[i] -= step*np.outer(sum(delta), sum(input))/n
+                self._weights[i] -= step*np.outer(np.mean(delta), np.mean(input))
             else:
-                self._weights[i] -= step*np.outer(sum(delta), sum(x[i-1] for x in activations))/n
+                self._weights[i] -= step*np.outer(np.mean(delta), np.mean(x[i-1] for x in activations))
 
             i -= 1
