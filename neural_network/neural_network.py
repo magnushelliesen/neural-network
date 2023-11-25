@@ -152,6 +152,6 @@ class NeuralNetwork():
 
             self._biases[i] -= step*sum(delta)/n
             if i == 0:
-                self._weights[i] -= step*np.outer(sum(delta), sum(x[0] for x in data))/n
+                self._weights[i] -= step*np.outer(sum(delta)/n, sum(x[0] for x in data)/n)
             else:
-                self._weights[i] -= step*np.outer(sum(delta), sum(x[i-1] for x in activations))/n
+                self._weights[i] -= step*np.outer(sum(delta)/n, sum(x[i-1] for x in activations)/n)
