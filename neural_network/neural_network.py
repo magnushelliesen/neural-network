@@ -118,10 +118,12 @@ class NeuralNetwork():
 
         # Forwardpropagation
         for i, (weights, biases) in enumerate(zip(self.weights, self.biases)):
-            if i < self.n_hidden:
+            if i == self.n_hidden:
+                x = self._softmax(weights.dot(x)+biases)
+            elif i == 0:
                 x = self._relu(weights.dot(x)+biases)
             else:
-                x = self._softmax(weights.dot(x)+biases)
+                x = self._sigmoid(weights.dot(x)+biases)
 
             activation += x,
 
@@ -147,8 +149,10 @@ class NeuralNetwork():
             for j, ((_, target), activation) in enumerate(zip(data, activations)):
                 if i == self.n_hidden:
                     delta += activation[i]-target,
-                else:
+                elif i == 0:
                     delta[j] = delta[j].dot(self.weights[i+1]).T*(activation[i]>0)
+                else:
+                    delta[j] = delta[j].dot(self.weights[i+1]).T*activation[i]*(1-activation[i])
 
             self._biases[i] -= step*sum(delta)/n
             if i == 0:
