@@ -3,6 +3,7 @@ By: Magnus Kvåle Helliesen
 """
 
 import numpy as np
+from random import choices
 
 
 class NeuralNetwork():
@@ -136,26 +137,34 @@ class NeuralNetwork():
 
         return self._activations(input)[-1]
 
-    def train(self, data: tuple(tuple()), step=1):
+    def train(self,
+              data: list[list[np.ndarray, np.ndarray]],
+              n: int,
+              step: float=0.1
+              ):
         """
         Docstring will come
         """
+        random_data = choices(data, k=n)
+        for input, target in random_data:
+            self.backpropagation(input, target, step)
+        
 
-        n = len(data)
-        activations = tuple(self._activations(x[0]) for x in data)
+    def backpropagation(self, input, target, step=0.1):
+        """
+        Docstring will come
+        """
+        
+        activations = self._activations(input)
 
-        delta = []
         for i in reversed(range(self.n_hidden+1)):
-            for j, ((_, target), activation) in enumerate(zip(data, activations)):
-                if i == self.n_hidden:
-                    delta += activation[i]-target,
-                elif i == 0:
-                    delta[j] = delta[j].dot(self.weights[i+1]).T*(activation[i]>0)
-                else:
-                    delta[j] = delta[j].dot(self.weights[i+1]).T*activation[i]*(1-activation[i])
-
-            self._biases[i] -= step*sum(delta)/n
-            if i == 0:
-                self._weights[i] -= step*np.outer(sum(delta)/n, sum(x[0] for x in data)/n)
+            if i == self.n_hidden:
+                delta = activations[i]-target
+                self._weights[i] -= step*np.outer(delta, activations[i-1])
+            elif i == 0:
+                delta = delta.dot(self.weights[i+1]).T*(activations[i]>0)
+                self._weights[i] -= step*np.outer(delta, input)
             else:
-                self._weights[i] -= step*np.outer(sum(delta)/n, sum(x[i-1] for x in activations)/n)
+                delta = delta.dot(self.weights[i+1]).T*activations[i]*(1-activations[i])
+                self._weights[i] -= step*np.outer(delta, activations[i-1])
+            self._biases[i] -= step*delta
