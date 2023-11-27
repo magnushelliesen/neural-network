@@ -79,6 +79,14 @@ class NeuralNetwork():
     def biases0(self):
         return self._biases0
 
+    @property
+    def delta_weights(self):
+        return [x-y for x, y in zip(self.weights, self.weights0)]
+
+    @property
+    def delta_biases(self):
+        return [x-y for x, y in zip(self.biases, self.biases0)]
+
     @staticmethod
     def _sigmoid(x):
         """
@@ -145,6 +153,7 @@ class NeuralNetwork():
         """
         Docstring will come
         """
+
         random_data = choices(data, k=n)
         for input, target in random_data:
             self.backpropagation(input, target, step)
