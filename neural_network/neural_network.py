@@ -8,7 +8,7 @@ from random import choices
 
 class NeuralNetwork():
     """
-    Docstring will come
+    A simple neural network class with multiple hidden layers.
     """
 
     def __init__(self,
@@ -18,7 +18,19 @@ class NeuralNetwork():
                  dim_output: int
                  ):
         """
-        Docstring will come
+        Initializes the neural network with given dimensions for input, hidden, and output layers.
+        Randomly initializes weights and biases for each layer.
+
+        Parameters
+        ----------
+        dim_input : int
+            Dimension of the input layer.
+        dim_hidden : int
+            Dimension of each hidden layer.
+        n_hidden : int
+            Number of hidden layers.
+        dim_output : int
+            Dimension of the output layer.
         """
 
         self._dim_input = dim_input
@@ -90,7 +102,17 @@ class NeuralNetwork():
     @staticmethod
     def _sigmoid(x):
         """
-        Sigmoid activation function
+        Sigmoid activation function.
+
+        Parameters
+        ----------
+        x : numpy.ndarray
+            Input array.
+
+        Returns
+        -------
+        numpy.ndarray
+            Output after applying the sigmoid function element-wise.
         """
 
         return 1/(1+np.exp(-x))
@@ -98,7 +120,17 @@ class NeuralNetwork():
     @staticmethod
     def _relu(x):
         """
-        ReLU activation function
+        ReLU activation function.
+
+        Parameters
+        ----------
+        x : numpy.ndarray
+            Input array.
+
+        Returns
+        -------
+        numpy.ndarray
+            Output after applying the ReLU function element-wise.
         """
 
         return np.maximum(x, 0)
@@ -106,14 +138,34 @@ class NeuralNetwork():
     @staticmethod
     def _softmax(x):
         """
-        Softmax activation function
+        Softmax activation function.
+
+        Parameters
+        ----------
+        x : numpy.ndarray
+            Input array.
+
+        Returns
+        -------
+        numpy.ndarray
+            Output after applying the softmax function.
         """
 
         return np.exp(x)/np.exp(x).sum()
 
     def _activations(self, input: np.ndarray):
         """
-        Docstring will come
+        Calculates activations through the network layers.
+
+        Parameters
+        ----------
+        input : numpy.ndarray
+            Input array.
+
+        Returns
+        -------
+        tuple
+            Activations from each layer stored in a tuple.
         """
 
         if input.shape[0] != self.dim_input:
@@ -140,7 +192,17 @@ class NeuralNetwork():
 
     def predict(self, input: np.ndarray):
         """
-        Docstring will come
+        Predicts the output for a given input using the neural network.
+
+        Parameters
+        ----------
+        input : numpy.ndarray
+            Input array.
+
+        Returns
+        -------
+        numpy.ndarray
+            Predicted output.
         """
 
         return self._activations(input)[-1]
@@ -151,7 +213,16 @@ class NeuralNetwork():
               step: float=0.1
               ):
         """
-        Docstring will come
+        Trains the neural network using backpropagation.
+
+        Parameters
+        ----------
+        data : list[list[numpy.ndarray, numpy.ndarray]]
+            Training data pairs of input and target output.
+        n : int
+            Number of training iterations.
+        step : float, optional
+            Learning rate (default is 0.1).
         """
 
         random_data = choices(data, k=n)
@@ -161,7 +232,16 @@ class NeuralNetwork():
 
     def backpropagation(self, input, target, step=0.1):
         """
-        Docstring will come
+        Performs backpropagation to update weights and biases based on the input and target output.
+
+        Parameters
+        ----------
+        input : numpy.ndarray
+            Input array.
+        target : numpy.ndarray
+            Target output.
+        step : float, optional
+            Learning rate (default is 0.1).
         """
         
         activations = self._activations(input)
