@@ -7,6 +7,6 @@ The class seems to be able to train on the [MNIST dataset](https://git-disl.gith
 
 It was a lot of tinkering to get it flying, lemme tell ya! What did the trick was to switch from batch gradient descent to stochastic gradient descent (and removing som bugs/errors). This is really cool!
 
-Considering to renaming this project/class "SonOfAnton" (for those who get the reference).
+I'm considering renaming this project/class "SonOfAnton" (for those who get the reference).
 
 ![image](https://github.com/magnushelliesen/neural-network/assets/104299371/3aa8d57c-5754-4687-9aef-9b5b6b603ab7)
