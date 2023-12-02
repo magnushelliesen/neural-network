@@ -185,7 +185,7 @@ class NeuralNetwork():
             else:
                 x = self._sigmoid(weights.dot(x)+biases)
 
-            if any(np.isfinite(x)):
+            if all(np.isfinite(x)) is False:
                 raise ValueError('Weights and biases give np.nan or np.inf')
 
             activation += x,
@@ -228,8 +228,18 @@ class NeuralNetwork():
         """
 
         random_data = choices(data, k=n)
+
+        weights, biases = [self.weights], [self.biases]
         for input, target in random_data:
-            self.backpropagation(input, target, step)
+            try:
+                # Storing last iterations of weights and biases in case backpropagation goes astray
+                weights = self.weights, [x.copy() for x in weights[0]],
+                biases = self.biases, [x.copy() for x in biases[0]],
+                self.backpropagation(input, target, step)
+            except ValueError:
+                self._weights, self._biases = weights[-1], biases[-1]
+                print('Try reducing learning rate')
+                return
         
 
     def backpropagation(self, input, target, step=0.1):
