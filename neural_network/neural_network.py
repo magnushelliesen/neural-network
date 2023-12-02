@@ -173,7 +173,6 @@ class NeuralNetwork():
         if len(input.shape) != 1:
             raise IndexError('Input must be 1d array')
 
-        # We store all the activation from the different layers in a tuple
         x = input
         activation = tuple()
 
@@ -185,6 +184,9 @@ class NeuralNetwork():
                 x = self._relu(weights.dot(x)+biases)
             else:
                 x = self._sigmoid(weights.dot(x)+biases)
+
+            if any(np.isfinite(x)):
+                raise ValueError('Weights and biases give np.nan or np.inf')
 
             activation += x,
 
@@ -246,6 +248,7 @@ class NeuralNetwork():
         
         activations = self._activations(input)
 
+        # Backpropagation
         for i in reversed(range(self.n_hidden+1)):
             if i == self.n_hidden:
                 delta = activations[i]-target
