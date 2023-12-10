@@ -173,7 +173,6 @@ class NeuralNetwork():
         if len(input.shape) != 1:
             raise IndexError('Input must be 1d array')
 
-        # We store all the activation from the different layers in a tuple
         x = input
         activation = tuple()
 
@@ -185,6 +184,9 @@ class NeuralNetwork():
                 x = self._relu(weights.dot(x)+biases)
             else:
                 x = self._sigmoid(weights.dot(x)+biases)
+
+            if all(np.isfinite(x)) is False:
+                raise ValueError('Weights and biases give np.nan or np.inf')
 
             activation += x,
 
@@ -226,8 +228,18 @@ class NeuralNetwork():
         """
 
         random_data = choices(data, k=n)
+
+        weights, biases = [self.weights], [self.biases]
         for input, target in random_data:
-            self.backpropagation(input, target, step)
+            try:
+                # Storing last iterations of weights and biases in case backpropagation goes astray
+                weights = self.weights, [x.copy() for x in weights[0]],
+                biases = self.biases, [x.copy() for x in biases[0]],
+                self.backpropagation(input, target, step)
+            except ValueError:
+                self._weights, self._biases = weights[-1], biases[-1]
+                print('Try reducing learning rate')
+                return
         
 
     def backpropagation(self, input, target, step=0.1):
@@ -246,6 +258,7 @@ class NeuralNetwork():
         
         activations = self._activations(input)
 
+        # Backpropagation
         for i in reversed(range(self.n_hidden+1)):
             if i == self.n_hidden:
                 delta = activations[i]-target
