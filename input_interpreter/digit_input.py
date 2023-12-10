@@ -83,6 +83,7 @@ def convert_to_bitmap(lines):
             bitmap = draw_line(bitmap, 100-x0, y0, 100-x1, y1)
     return bitmap
 
+
 def matrix_mapper(X: np.ndarray, n: int, m: int):
     """
     Function that maps one matrix X to another x
@@ -110,10 +111,11 @@ def matrix_mapper(X: np.ndarray, n: int, m: int):
         /(N_div_n*M_div_m)
     )
 
-lines = draw_input()
 
-X = convert_to_bitmap(lines)
-x = x = matrix_mapper(X, 28, 28)
-x[x<200] = 0
-plt.imshow(x, cmap='gray')
-plt.show()
+if __name__ == '__main__':
+    lines = draw_input()
+    X = convert_to_bitmap(lines)
+    x = x = matrix_mapper(X, 28, 28)
+    x[x<200] = 0
+    plt.imshow(x, cmap='gray')
+    plt.show()
