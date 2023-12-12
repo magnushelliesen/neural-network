@@ -229,15 +229,12 @@ class NeuralNetwork():
 
         random_data = choices(data, k=n)
 
-        weights, biases = [self.weights], [self.biases]
+        weights, biases = [x.copy() for x in self.weights], [x.copy() for x in self.biases]
         for input, target in random_data:
             try:
-                # Storing last iterations of weights and biases in case backpropagation goes astray
-                weights = self.weights, [x.copy() for x in weights[0]],
-                biases = self.biases, [x.copy() for x in biases[0]],
                 self.backpropagation(input, target, step)
             except ValueError:
-                self._weights, self._biases = weights[-1], biases[-1]
+                self._weights, self._biases = weights, biases
                 print('Try reducing learning rate')
                 return
         
