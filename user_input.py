@@ -8,5 +8,4 @@ x[x<200] = 0
 plt.imshow(x, cmap='gray')
 plt.show()
 
-# Here comes the feeding of the written figure into the neural net
-# Gotta make a pickle file of a trained net first
+digit = (255-x).reshape(784)
