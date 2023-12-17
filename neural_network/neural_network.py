@@ -3,6 +3,7 @@ By: Magnus Kvåle Helliesen
 """
 
 import numpy as np
+import pandas as pd
 from random import choices
 
 
@@ -33,6 +34,8 @@ class NeuralNetwork():
             Dimension of the output layer.
         """
 
+        self._training = 0
+
         self._dim_input = dim_input
         self._dim_hidden = dim_hidden
         self._n_hidden = n_hidden
@@ -58,6 +61,10 @@ class NeuralNetwork():
         # Storing initial weigths and biases
         self._weights0 = tuple(x.copy() for x in self.weights)
         self._biases0 = tuple(x.copy() for x in self.biases)
+
+    @property
+    def training(self):
+        return self._training
 
     @property
     def dim_input(self):
@@ -98,6 +105,9 @@ class NeuralNetwork():
     @property
     def delta_biases(self):
         return [x-y for x, y in zip(self.biases, self.biases0)]
+
+    def __repr__(self):
+        return f'NeuralNetwork({self.dim_input}, {self.dim_hidden}, {self.n_hidden}, {self.dim_output})'
 
     @staticmethod
     def _sigmoid(x):
@@ -227,7 +237,11 @@ class NeuralNetwork():
             Learning rate (default is 0.1).
         """
 
-        random_data = choices(data, k=n)
+        if isinstance(data, (list, tuple)):
+            random_data = choices(data, k=n)
+        elif isinstance(data, pd.DataFrame):
+            random_df = data.sample(n=n, replace=True)
+            pass
 
         weights, biases = [x.copy() for x in self.weights], [x.copy() for x in self.biases]
         for input, target in random_data:
@@ -237,6 +251,8 @@ class NeuralNetwork():
                 self._weights, self._biases = weights, biases
                 print('Try reducing learning rate')
                 return
+
+        self._training += n
         
 
     def backpropagation(self, input, target, step=0.1):
@@ -267,3 +283,8 @@ class NeuralNetwork():
                 delta = delta.dot(self.weights[i+1]).T*activations[i]*(1-activations[i])
                 self._weights[i] -= step*np.outer(delta, activations[i-1])
             self._biases[i] -= step*delta
+
+
+if __name__ == '__main__':
+    # Tests TBA
+    pass
