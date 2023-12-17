@@ -65,22 +65,26 @@ def draw_line(mat, x0, y0, x1, y1):
 
     # Write intermediate coordinates
     mat[x, y] = 0
+    mat[x-1, y] = 0
+    mat[x+1, y] = 0
+    mat[x, y-1] = 0
+    mat[x, y+1] = 0
 
     return mat if not transpose else mat.T
 
 
 def convert_to_bitmap(lines):
-    bitmap = np.zeros((100, 100))+255
+    bitmap = np.zeros((84, 84))+255
     for line in lines:
         for r0, r1 in zip(line[:-1], line[1:]):
             y0, x0 = r0
             y1, x1 = r1
-            x0 = round(x0*100)
-            y0 = round(y0*100)
-            x1 = round(x1*100)
-            y1 = round(y1*100)
+            x0 = round(x0*84)
+            y0 = round(y0*84)
+            x1 = round(x1*84)
+            y1 = round(y1*84)
 
-            bitmap = draw_line(bitmap, 100-x0, y0, 100-x1, y1)
+            bitmap = draw_line(bitmap, 84-x0, y0, 84-x1, y1)
     return bitmap
 
 
