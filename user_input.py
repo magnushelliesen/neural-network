@@ -7,7 +7,7 @@ with open('nn.pickle', 'rb') as f:
 
 lines = draw_input()
 X = convert_to_bitmap(lines)
-x = x = matrix_mapper(X, 28, 28)
+x = matrix_mapper(X, 28, 28)
 x[x<200] = 0
 
 digit = (255-x).reshape(784)
