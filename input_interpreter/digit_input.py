@@ -2,6 +2,26 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
+def center_lines(lines):
+    x_min, x_max, y_min, y_max = 1, 0, 1, 0
+
+    for line in lines:
+        x_min = min(min(p[0] for p in line), x_min)
+        x_max = max(max(p[0] for p in line), x_max)
+        y_min = min(min(p[1] for p in line), y_min)
+        y_max = max(max(p[1] for p in line), y_max)
+
+    x_mid = (x_max+x_min)/2
+    y_mid = (y_max+y_min)/2
+
+    scale = 0.3/(y_max-y_mid)
+
+    centered_lines = []
+    for line in lines:
+        centered_lines += [(scale*(x-x_mid)+0.5, scale*(y-y_mid)+0.5) for x, y in line],
+
+    return centered_lines
+
 def draw_input():
     fig, ax = plt.subplots()
     ax.set_xlim(0, 1)
@@ -33,7 +53,7 @@ def draw_input():
 
     plt.show()
 
-    return lines
+    return center_lines(lines)
 
 
 def draw_line(mat, x0, y0, x1, y1):
