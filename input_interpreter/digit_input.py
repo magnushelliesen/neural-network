@@ -23,7 +23,7 @@ def center_lines(lines):
     return centered_lines
 
 def draw_input():
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(5, 5))
     ax.set_xlim(0, 1)
     ax.set_ylim(0, 1)
     ax.set_title('Write a digit')
