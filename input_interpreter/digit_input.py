@@ -1,3 +1,8 @@
+"""
+This code is sligthly messy, and some of it is borrowed, but it works!
+like https://www.reddit.com/r/Bossfight/comments/e3e582/beachy_the_udder_walking_cow/
+"""
+
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -22,8 +27,9 @@ def center_lines(lines):
 
     return centered_lines
 
+
 def draw_input():
-    fig, ax = plt.subplots(figsize=(5, 5))
+    fig, ax = plt.subplots(figsize=(7.5, 7.5))
     ax.set_xlim(0, 1)
     ax.set_ylim(0, 1)
     ax.set_title('Write a digit')
@@ -84,27 +90,29 @@ def draw_line(mat, x0, y0, x1, y1):
         return mat if not transpose else mat.T
 
     # Write intermediate coordinates
-    mat[x, y] = 0
-    mat[x-1, y] = 0
-    mat[x+1, y] = 0
-    mat[x, y-1] = 0
-    mat[x, y+1] = 0
+    mat[x, y] -= 200
+    mat[x-1, y] -= 200
+    mat[x+1, y] -= 200
+    mat[x, y-1] -= 200
+    mat[x, y+1] -= 200
+   
+    mat = np.maximum(mat, 0)
 
     return mat if not transpose else mat.T
 
 
 def convert_to_bitmap(lines):
-    bitmap = np.zeros((84, 84))+255
+    bitmap = np.zeros((56, 56))+255
     for line in lines:
         for r0, r1 in zip(line[:-1], line[1:]):
             y0, x0 = r0
             y1, x1 = r1
-            x0 = round(x0*84)
-            y0 = round(y0*84)
-            x1 = round(x1*84)
-            y1 = round(y1*84)
+            x0 = round(x0*56)
+            y0 = round(y0*56)
+            x1 = round(x1*56)
+            y1 = round(y1*56)
 
-            bitmap = draw_line(bitmap, 84-x0, y0, 84-x1, y1)
+            bitmap = draw_line(bitmap, 56-x0, y0, 56-x1, y1)
     return bitmap
 
 
@@ -113,7 +121,7 @@ def matrix_mapper(X: np.ndarray, n: int, m: int):
     Function that maps one matrix X to another x
     """
     N, M = X.shape
-    
+   
     # Get number of rows and columns to remove
     N_div_n, N_mod_n = divmod(N, n)
     M_div_m, M_mod_m = divmod(M, m)
@@ -143,3 +151,4 @@ if __name__ == '__main__':
     x[x<200] = 0
     plt.imshow(x, cmap='gray')
     plt.show()
+    
