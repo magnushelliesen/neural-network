@@ -33,8 +33,11 @@ plt.show()
 correct = input('What was the digit?: ')
 
 print('Training before: ', nn.training)
-nn.train([[digit_norm, 1*np.array([int(correct) == i for i in range(10)])]], 1, 0.005)
-print('Training after: ', nn.training)
+try:
+	nn.train([[digit_norm, 1*np.array([int(correct) == i for i in range(10)])]], 1, 0.005)
+	print('Training after: ', nn.training)
+except ValueError:
+	print('No new training completed')
 
 with open('nn.pickle', 'wb') as f:
     pickle.dump(nn, f)
