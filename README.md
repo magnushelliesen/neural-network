@@ -6,7 +6,7 @@ The class can be installed using
 pip install git+https://github.com/magnushelliesen/neural-network.git
 ```
 
-The class seems to be able to train on the [MNIST dataset](https://git-disl.github.io/GTDLBench/datasets/mnist_datasets/) (see [notebook]([https://github.com/magnushelliesen/neural-network/blob/main/notebooks/neural-network-mnist-test.ipynb](https://github.com/magnushelliesen/neural-network/blob/main/notebooks/demo-neural-network-mnist-test.ipynb))), it recognizes most (but not all) digits. There's probably something left to work on with the backpropagation method. But DANG(!), it can read a squiggly 9:
+The class seems to be able to train on the [MNIST dataset](https://git-disl.github.io/GTDLBench/datasets/mnist_datasets/) (see [notebook](https://github.com/magnushelliesen/neural-network/blob/main/notebooks/demo-neural-network-mnist-test.ipynb)), it recognizes most (but not all) digits. There's probably something left to work on with the backpropagation method. But DANG(!), it can read a squiggly 9:
 
 ![image](https://github.com/magnushelliesen/neural-network/assets/104299371/11f036eb-f39b-4ffb-b413-398532a93f72)
 
