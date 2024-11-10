@@ -1,7 +1,7 @@
 # neural-network
 I've built a neural network-[class](https://github.com/magnushelliesen/neural-network/blob/main/neural_network/neural_network.py) (from first principles, i.e. calculus and linear algebra, only using NumPy) with a train/backpropagation method.
 
-The class can be installed usin
+The class can be installed using
 ```python
 pip install git+https://github.com/magnushelliesen/neural-network.git
 ```
