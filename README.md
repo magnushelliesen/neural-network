@@ -15,3 +15,6 @@ It was a lot of tinkering to get it flying, lemme tell ya! What did the trick wa
 I'm considering renaming this project/class "SonOfAnton" (for those who get the reference).
 
 ![image](https://github.com/magnushelliesen/neural-network/assets/104299371/3aa8d57c-5754-4687-9aef-9b5b6b603ab7)
+
+## Neural network app
+A pre-trained instance of the class is running on [https://handwritten-digit-recognizer-app-569320861368.asia-east1.run.app/](https://handwritten-digit-recognizer-app-569320861368.asia-east1.run.app/) and provides a nifty user interface.
