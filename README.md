@@ -1,7 +1,12 @@
 # neural-network
-I've built a neural network-[class](https://github.com/magnushelliesen/neural-network/blob/main/neural_network/neural_network.py) (from first principles, only using NumPy) with a train/backpropagation method. 
+I've built a neural network-[class](https://github.com/magnushelliesen/neural-network/blob/main/neural_network/neural_network.py) (from first principles, i.e. calculus and linear algebra, only using NumPy) with a train/backpropagation method.
 
-The class seems to be able to train on the [MNIST dataset](https://git-disl.github.io/GTDLBench/datasets/mnist_datasets/) (see [notebook](https://github.com/magnushelliesen/neural-network/blob/main/neural-network-mnist-test.ipynb)), it recognizes most (but not all) digits. There's probably something left to work on with the backpropagation method. But DANG(!), it can read a squiggly 9:
+The class can be installed usin
+```python
+pip install git+https://github.com/magnushelliesen/neural-network.git
+```
+
+The class seems to be able to train on the [MNIST dataset](https://git-disl.github.io/GTDLBench/datasets/mnist_datasets/) (see [notebook](https://github.com/magnushelliesen/neural-network/blob/main/notebooks/neural-network-mnist-test.ipynb)), it recognizes most (but not all) digits. There's probably something left to work on with the backpropagation method. But DANG(!), it can read a squiggly 9:
 
 ![image](https://github.com/magnushelliesen/neural-network/assets/104299371/11f036eb-f39b-4ffb-b413-398532a93f72)
 
