@@ -241,7 +241,7 @@ class NeuralNetwork():
             random_data = choices(data, k=n)
         elif isinstance(data, pd.DataFrame):
             random_df = data.sample(n=n, replace=True)
-            pass
+            raise RuntimeError('No support for dataframe yet')
 
         weights, biases = [x.copy() for x in self.weights], [x.copy() for x in self.biases]
         for input, target in random_data:
@@ -270,21 +270,27 @@ class NeuralNetwork():
         """
         
         activations = self._activations(input)
+        delta_weights = [np.zeros_like(x) for x in self.weights]
+        delta_biases = [np.zeros_like(x) for x in self.biases]
 
         # Backpropagation
         for i in reversed(range(self.n_hidden+1)):
             if i == self.n_hidden:
                 delta = activations[i]-target
-                self._weights[i] -= step*np.outer(delta, activations[i-1])
+                delta_weights[i] = step*np.outer(delta, activations[i-1])
             elif i == 0:
                 delta = delta.dot(self.weights[i+1]).T*(activations[i]>0)
-                self._weights[i] -= step*np.outer(delta, input)
+                delta_weights[i] = step*np.outer(delta, input)
             else:
                 delta = delta.dot(self.weights[i+1]).T*activations[i]*(1-activations[i])
-                self._weights[i] -= step*np.outer(delta, activations[i-1])
-            self._biases[i] -= step*delta
+                delta_weights[i] -= step*np.outer(delta, activations[i-1])
+            delta_biases[i] -= step*delta
+        
+        for weight, delta_weight in zip(self._weights, delta_weights):
+            weight += delta_weight
 
+        for bias, delta_biase in zip(self._biases, delta_biases):
+            bias += delta_biases
 
 if __name__ == '__main__':
-    # Tests TBA
-    pass
+    pass # TBA
