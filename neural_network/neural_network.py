@@ -290,7 +290,7 @@ class NeuralNetwork():
             weight += delta_weight
 
         for bias, delta_biase in zip(self._biases, delta_biases):
-            bias += delta_biases
+            bias += delta_biase
 
 if __name__ == '__main__':
     pass # TBA
