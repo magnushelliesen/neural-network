@@ -244,16 +244,78 @@ class NeuralNetwork():
             raise RuntimeError('No support for dataframe yet')
 
         weights, biases = [x.copy() for x in self.weights], [x.copy() for x in self.biases]
+
         for input, target in random_data:
             try:
-                self.backpropagation(input, target, step)
+                delta_weights, delta_biases = self.backpropagation(input, target, step)
+
+                for weight, delta_weight in zip(self._weights, delta_weights):
+                    weight += delta_weight
+
+                for bias, delta_bias in zip(self._biases, delta_biases):
+                    bias += delta_bias
             except ValueError:
                 self._weights, self._biases = weights, biases
                 print('Try reducing learning rate')
                 return
 
         self._training += n
-        
+
+    def batch_train(self,
+              data: list[list[np.ndarray, np.ndarray]],
+              n: int,
+              batch_size: int=10,
+              step: float=0.1
+              ):
+        """
+        Trains the neural network using backpropagation.
+
+        Parameters
+        ----------
+        data : list[list[numpy.ndarray, numpy.ndarray]]
+            Training data pairs of input and target output.
+        n : int
+            Number of training iterations.
+        step : float, optional
+            Learning rate (default is 0.1).
+        """
+
+        if isinstance(data, (list, tuple)):
+            random_data_batches = self.batchify(choices(data, k=n), batch_size)
+        elif isinstance(data, pd.DataFrame):
+            random_df = data.sample(n=n, replace=True)
+            raise RuntimeError('No support for dataframe yet')
+
+        weights, biases = [x.copy() for x in self.weights], [x.copy() for x in self.biases]
+
+        for random_data_batch in list(random_data_batches):
+
+            delta_weights = [np.zeros_like(x) for x in self.weights]
+            delta_biases = [np.zeros_like(x) for x in self.biases]
+
+            for random_data in random_data_batch:
+                input, target = random_data
+                try:
+                    delta_weights_update, delta_biases_update = self.backpropagation(input, target, step)
+
+                    for delta_weight, delta_weight_update in zip(delta_weights, delta_weights_update):
+                        delta_weight += delta_weight_update
+
+                    for delta_biase, delta_biase_update in zip(delta_biases, delta_biases_update):
+                        delta_biase += delta_biase_update
+
+                except ValueError:
+                    self._weights, self._biases = weights, biases
+                    print('Try reducing learning rate')
+                    return
+
+            for weight, delta_weight in zip(self._weights, delta_weights):
+                weight += delta_weight
+
+            for bias, delta_bias in zip(self._biases, delta_biases):
+                bias += delta_bias
+
+        self._training += n
 
     def backpropagation(self, input, target, step=0.1):
         """
@@ -277,20 +339,21 @@ class NeuralNetwork():
         for i in reversed(range(self.n_hidden+1)):
             if i == self.n_hidden:
                 delta = activations[i]-target
-                delta_weights[i] = step*np.outer(delta, activations[i-1])
+                delta_weights[i] -= step*np.outer(delta, activations[i-1])
             elif i == 0:
                 delta = delta.dot(self.weights[i+1]).T*(activations[i]>0)
-                delta_weights[i] = step*np.outer(delta, input)
+                delta_weights[i] -= step*np.outer(delta, input)
             else:
                 delta = delta.dot(self.weights[i+1]).T*activations[i]*(1-activations[i])
                 delta_weights[i] -= step*np.outer(delta, activations[i-1])
             delta_biases[i] -= step*delta
-        
-        for weight, delta_weight in zip(self._weights, delta_weights):
-            weight += delta_weight
 
-        for bias, delta_bias in zip(self._biases, delta_biases):
-            bias += delta_bias
+        return delta_weights, delta_biases
+
+    @staticmethod
+    def batchify(x, n):
+        for i in range(0, len(x), n):
+            yield x[i:i+n]
 
 if __name__ == '__main__':
     pass # TBA
