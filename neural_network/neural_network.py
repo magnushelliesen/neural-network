@@ -247,7 +247,13 @@ class NeuralNetwork():
         weights, biases = [x.copy() for x in self.weights], [x.copy() for x in self.biases]
         for input, target in random_data:
             try:
-                self.backpropagation(input, target, step)
+                delta_weights, delta_biases = self.backpropagation(input, target, step)
+
+                for weight, delta_weight in zip(self._weights, delta_weights):
+                    weight += delta_weight
+
+                for bias, delta_bias in zip(self._biases, delta_biases):
+                    bias += delta_bias
             except ValueError:
                 self._weights, self._biases = weights, biases
                 print('Try reducing learning rate')
@@ -286,12 +292,8 @@ class NeuralNetwork():
                 delta = delta.dot(self.weights[i+1]).T*activations[i]*(1-activations[i])
                 delta_weights[i] -= step*np.outer(delta, activations[i-1])
             delta_biases[i] -= step*delta
-        
-        for weight, delta_weight in zip(self._weights, delta_weights):
-            weight += delta_weight
 
-        for bias, delta_bias in zip(self._biases, delta_biases):
-            bias += delta_bias
+        return delta_weights, delta_biases
 
     @staticmethod
     def batchify(x, n):
