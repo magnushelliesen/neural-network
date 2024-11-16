@@ -222,7 +222,8 @@ class NeuralNetwork():
     def train(self,
               data: list[list[np.ndarray, np.ndarray]],
               n: int,
-              step: float=0.1
+              step: float=0.1,
+              batch_size: int=1
               ):
         """
         Trains the neural network using backpropagation.
@@ -277,10 +278,10 @@ class NeuralNetwork():
         for i in reversed(range(self.n_hidden+1)):
             if i == self.n_hidden:
                 delta = activations[i]-target
-                delta_weights[i] = step*np.outer(delta, activations[i-1])
+                delta_weights[i] -= step*np.outer(delta, activations[i-1])
             elif i == 0:
                 delta = delta.dot(self.weights[i+1]).T*(activations[i]>0)
-                delta_weights[i] = step*np.outer(delta, input)
+                delta_weights[i] -= step*np.outer(delta, input)
             else:
                 delta = delta.dot(self.weights[i+1]).T*activations[i]*(1-activations[i])
                 delta_weights[i] -= step*np.outer(delta, activations[i-1])
@@ -291,6 +292,11 @@ class NeuralNetwork():
 
         for bias, delta_bias in zip(self._biases, delta_biases):
             bias += delta_bias
+
+    @staticmethod
+    def batchify(x, n):
+        for i in range(0, len(x), n):
+            yield x[i:i+n]
 
 if __name__ == '__main__':
     pass # TBA
