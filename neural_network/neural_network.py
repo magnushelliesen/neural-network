@@ -281,34 +281,33 @@ class NeuralNetwork():
         """
 
         if isinstance(data, (list, tuple)):
-            random_data = choices(data, k=n)
-            random_data_batches = self.batchify(random_data, batch_size)
+            random_data_batches = self.batchify(choices(data, k=n), batch_size)
         elif isinstance(data, pd.DataFrame):
             random_df = data.sample(n=n, replace=True)
             raise RuntimeError('No support for dataframe yet')
 
         weights, biases = [x.copy() for x in self.weights], [x.copy() for x in self.biases]
 
-        for random_data_batch in random_data_batches:
+        for random_data_batch in list(random_data_batches):
 
             delta_weights = [np.zeros_like(x) for x in self.weights]
             delta_biases = [np.zeros_like(x) for x in self.biases]
 
             for random_data in random_data_batch:
-                for input, target in random_data:
-                    try:
-                        delta_weights_update, delta_biases_update = self.backpropagation(input, target, step)
+                input, target = random_data
+                try:
+                    delta_weights_update, delta_biases_update = self.backpropagation(input, target, step)
 
-                        for delta_weight, delta_weight_update in zip(delta_weights, delta_weights_update):
-                            delta_weight += delta_weight_update
+                    for delta_weight, delta_weight_update in zip(delta_weights, delta_weights_update):
+                        delta_weight += delta_weight_update
 
-                        for delta_biase, delta_biase_update in zip(delta_biases, delta_biases_update):
-                            delta_biase += delta_biase_update
+                    for delta_biase, delta_biase_update in zip(delta_biases, delta_biases_update):
+                        delta_biase += delta_biase_update
 
-                    except ValueError:
-                        self._weights, self._biases = weights, biases
-                        print('Try reducing learning rate')
-                        return
+                except ValueError:
+                    self._weights, self._biases = weights, biases
+                    print('Try reducing learning rate')
+                    return
 
             for weight, delta_weight in zip(self._weights, delta_weights):
                 weight += delta_weight
