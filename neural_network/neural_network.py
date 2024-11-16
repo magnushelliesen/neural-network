@@ -222,8 +222,7 @@ class NeuralNetwork():
     def train(self,
               data: list[list[np.ndarray, np.ndarray]],
               n: int,
-              step: float=0.1,
-              batch_size: int=1
+              step: float=0.1
               ):
         """
         Trains the neural network using backpropagation.
@@ -245,6 +244,7 @@ class NeuralNetwork():
             raise RuntimeError('No support for dataframe yet')
 
         weights, biases = [x.copy() for x in self.weights], [x.copy() for x in self.biases]
+
         for input, target in random_data:
             try:
                 delta_weights, delta_biases = self.backpropagation(input, target, step)
@@ -260,7 +260,63 @@ class NeuralNetwork():
                 return
 
         self._training += n
-        
+
+    def batch_train(self,
+              data: list[list[np.ndarray, np.ndarray]],
+              n: int,
+              batch_size: int=10,
+              step: float=0.1
+              ):
+        """
+        Trains the neural network using backpropagation.
+
+        Parameters
+        ----------
+        data : list[list[numpy.ndarray, numpy.ndarray]]
+            Training data pairs of input and target output.
+        n : int
+            Number of training iterations.
+        step : float, optional
+            Learning rate (default is 0.1).
+        """
+
+        if isinstance(data, (list, tuple)):
+            random_data = choices(data, k=n)
+            random_data_batches = self.batchify(random_data)
+        elif isinstance(data, pd.DataFrame):
+            random_df = data.sample(n=n, replace=True)
+            raise RuntimeError('No support for dataframe yet')
+
+        weights, biases = [x.copy() for x in self.weights], [x.copy() for x in self.biases]
+
+        for random_data_batch in random_data_batches:
+
+            delta_weights = [np.zeros_like(x) for x in self.weights]
+            delta_biases = [np.zeros_like(x) for x in self.biases]
+
+            for random_data in random_data_batch:
+                for input, target in random_data:
+                    try:
+                        delta_weights_update, delta_biases_update = self.backpropagation(input, target, step)
+
+                        for delta_weight, delta_weight_update in zip(delta_weights, delta_weights_update):
+                            delta_weight += delta_weight_update
+
+                        for delta_biase, delta_biase_update in zip(delta_biases, delta_biases_update):
+                            delta_biase += delta_biase_update
+
+                    except ValueError:
+                        self._weights, self._biases = weights, biases
+                        print('Try reducing learning rate')
+                        return
+
+            for weight, delta_weight in zip(self._weights, delta_weights):
+                weight += delta_weight
+
+            for bias, delta_bias in zip(self._biases, delta_biases):
+                bias += delta_bias
+
+        self._training += n
 
     def backpropagation(self, input, target, step=0.1):
         """
