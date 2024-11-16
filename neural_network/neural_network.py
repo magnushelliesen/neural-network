@@ -282,7 +282,7 @@ class NeuralNetwork():
 
         if isinstance(data, (list, tuple)):
             random_data = choices(data, k=n)
-            random_data_batches = self.batchify(random_data)
+            random_data_batches = self.batchify(random_data, batch_size)
         elif isinstance(data, pd.DataFrame):
             random_df = data.sample(n=n, replace=True)
             raise RuntimeError('No support for dataframe yet')
