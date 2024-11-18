@@ -8,7 +8,7 @@ $$
 We let $\hat{y}_i$ be given by the _Softmax_ activation function
 
 $$
-  \hat{y}_i = \sigma(z_i) = \frac{e^{z_i}}{\sum_{k=1}^K e^{z_k}}.
+  \sigma(z_i) = \frac{e^{z_i}}{\sum_{k=1}^K e^{z_k}}.
 $$
 
 Together, they give the gradient
