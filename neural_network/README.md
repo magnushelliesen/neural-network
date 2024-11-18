@@ -5,10 +5,10 @@ $$
   L(y,\hat{y})=-\sum_i y_i \log(\hat{y}_i),
 $$
 
-Together with the _Softmax_ activation function
+We let $\hat{y}_i$ be given by the _Softmax_ activation function
 
 $$
-  \sigma(z_i) = \frac{e^{z_i}}{\sum_{k=1}^K e^{z_k}}.
+  \hat{y}_i = \sigma(z_i) = \frac{e^{z_i}}{\sum_{k=1}^K e^{z_k}}.
 $$
 
 Together, they give the gradient
