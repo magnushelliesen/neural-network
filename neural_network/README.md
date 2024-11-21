@@ -11,7 +11,7 @@ $$
   \sigma(z_i) = \frac{e^{z_i}}{\sum_{k=1}^K e^{z_k}}.
 $$
 
-Together, they give the gradient
+Together, they give the gradient w.r.t. $z_i$
 
 $$
   \frac{\partial L}{\partial z_i} = \sigma(z_i)-y_i.
