@@ -2,10 +2,10 @@
 The error function used in the output layer is the _Categorical Cross Entropy Loss_,
 
 $$
-  L(y,\hat{y})=-\sum_i y_i \log(\hat{y}_i),
+  L(y,\hat{y})=-\sum_i y_i \log(\hat{y}_i).
 $$
 
-We let $\hat{y}_i$ be given by the _Softmax_ activation function
+The activation function for the output layer is the _Softmax_ function
 
 $$
   \sigma(z_i) = \frac{e^{z_i}}{\sum_{k=1}^K e^{z_k}}.
