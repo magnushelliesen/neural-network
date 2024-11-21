@@ -14,5 +14,7 @@ $$
 Together, they give the gradient w.r.t. $z_i$
 
 $$
-  \frac{\partial L}{\partial z_i} = \sigma(z_i)-y_i.
+  \frac{\partial L}{\partial z_i} = \sigma(z_i)-y_i,
 $$
+
+which has obvious benefits in that it's very simple.
