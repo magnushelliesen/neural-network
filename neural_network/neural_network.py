@@ -41,6 +41,9 @@ class NeuralNetwork():
         self._n_hidden = n_hidden
         self._dim_output = dim_output
 
+        self._last_input = None
+        self._last_activations = None
+
         # Setup weights and biases
         self._weights = []
         self._biases = []
@@ -105,6 +108,14 @@ class NeuralNetwork():
     @property
     def delta_biases(self):
         return [x-y for x, y in zip(self.biases, self.biases0)]
+
+    @property
+    def last_input(self):
+        return self._last_input
+
+    @property
+    def last_activations(self):
+        return self._last_activations
 
     def __repr__(self):
         return f'NeuralNetwork({self.dim_input}, {self.dim_hidden}, {self.n_hidden}, {self.dim_output})'
@@ -184,7 +195,7 @@ class NeuralNetwork():
             raise IndexError('Input must be 1d array')
 
         x = input
-        activation = tuple()
+        activations = tuple()
 
         # Forwardpropagation
         for i, (weights, biases) in enumerate(zip(self.weights, self.biases)):
@@ -198,9 +209,12 @@ class NeuralNetwork():
             if all(np.isfinite(x)) is False:
                 raise ValueError('Weights and biases give np.nan or np.inf')
 
-            activation += x,
+            activations += x,
 
-        return activation
+        self._last_input = input
+        self._last_activations = activations
+
+        return activations
 
     def predict(self, input: np.ndarray):
         """

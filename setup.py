@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='NeuralNetwork',
-    version='0.1.2',
+    version='0.1.3',
     url='https://github.com/magnushelliesen/neural-network.git',
     author='Magnus Kvåle Helliesen',
     author_email='magnus.helliesen@gmail.com',
