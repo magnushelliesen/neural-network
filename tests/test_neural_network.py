@@ -25,3 +25,10 @@ def test_neural_network():
     # Check prediction of array 2
     prediction = nn.predict(array2)
     assert prediction[1] > 0.9, "Prediction for array2 is wrong"
+
+    # Check properties
+    assert nn.training == 10_000, "Training is wrong"
+    assert nn.n_hidden == 2, "n_hidden is wrong"
+    assert nn.dim_input == 100, "dim_input is wrong"
+    assert nn.dim_hidden == 50, "dim_hidden is wrong"
+    assert nn.dim_output == 2, "dim_output is wrong"
