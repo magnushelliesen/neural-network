@@ -34,7 +34,7 @@ jobs:
     # Step 4: Run the tests with coverage
     - name: Run tests with coverage
       run: |
-        coverage run -m pytets tests/*.py
+        coverage run -m pytest tests/*.py
         coverage report -m
 
     # Optional Step: Upload coverage report as an artifact
