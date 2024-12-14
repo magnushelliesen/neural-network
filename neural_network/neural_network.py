@@ -368,6 +368,3 @@ class NeuralNetwork():
     def batchify(x, n):
         for i in range(0, len(x), n):
             yield x[i:i+n]
-
-if __name__ == '__main__':
-    pass # TBA
