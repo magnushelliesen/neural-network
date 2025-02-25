@@ -112,11 +112,11 @@ class NeuralNetwork():
         return [x-y for x, y in zip(self.biases, self.biases0)]
 
     @property
-    def last_input(self):
+    def last_input(self) -> np.ndarray:
         return self._last_input
 
     @property
-    def last_activations(self) -> np.ndarray:
+    def last_activations(self) -> Tuple[np.ndarray]:
         return self._last_activations
 
     def __repr__(self):
