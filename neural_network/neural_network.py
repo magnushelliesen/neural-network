@@ -5,6 +5,7 @@ By: Magnus Kvåle Helliesen
 import numpy as np
 import pandas as pd
 from random import choices
+from typing import Union, List, Tuple
 
 
 class NeuralNetwork():
@@ -12,12 +13,13 @@ class NeuralNetwork():
     A simple neural network class with multiple hidden layers.
     """
 
-    def __init__(self,
-                 dim_input: int,
-                 dim_hidden: int,
-                 n_hidden: int,
-                 dim_output: int
-                 ):
+    def __init__(
+            self,
+            dim_input: int,
+            dim_hidden: int,
+            n_hidden: int,
+            dim_output: int
+            ) -> None:
         """
         Initializes the neural network with given dimensions for input, hidden, and output layers.
         Randomly initializes weights and biases for each layer.
@@ -66,47 +68,47 @@ class NeuralNetwork():
         self._biases0 = tuple(x.copy() for x in self.biases)
 
     @property
-    def training(self):
+    def training(self) -> int:
         return self._training
 
     @property
-    def dim_input(self):
+    def dim_input(self) -> int:
         return self._dim_input
 
     @property
-    def dim_hidden(self):
+    def dim_hidden(self) -> int:
         return self._dim_hidden
 
     @property
-    def n_hidden(self):
+    def n_hidden(self) -> int:
         return self._n_hidden
 
     @property
-    def dim_output(self):
+    def dim_output(self) -> int:
         return self._dim_output
 
     @property
-    def weights(self):
+    def weights(self) -> np.ndarray:
         return self._weights
 
     @property
-    def biases(self):
+    def biases(self) -> np.ndarray:
         return self._biases
 
     @property
-    def weights0(self):
+    def weights0(self) -> np.ndarray:
         return self._weights0
 
     @property
-    def biases0(self):
+    def biases0(self) -> np.ndarray:
         return self._biases0
 
     @property
-    def delta_weights(self):
+    def delta_weights(self) -> np.ndarray:
         return [x-y for x, y in zip(self.weights, self.weights0)]
 
     @property
-    def delta_biases(self):
+    def delta_biases(self) -> np.ndarray:
         return [x-y for x, y in zip(self.biases, self.biases0)]
 
     @property
@@ -114,14 +116,14 @@ class NeuralNetwork():
         return self._last_input
 
     @property
-    def last_activations(self):
+    def last_activations(self) -> np.ndarray:
         return self._last_activations
 
     def __repr__(self):
         return f'NeuralNetwork({self.dim_input}, {self.dim_hidden}, {self.n_hidden}, {self.dim_output})'
 
     @staticmethod
-    def _sigmoid(x):
+    def _sigmoid(x: np.ndarray) -> np.ndarray:
         """
         Sigmoid activation function.
 
@@ -139,7 +141,7 @@ class NeuralNetwork():
         return 1/(1+np.exp(-x))
 
     @staticmethod
-    def _relu(x):
+    def _relu(x: np.ndarray) -> np.ndarray:
         """
         ReLU activation function.
 
@@ -157,7 +159,7 @@ class NeuralNetwork():
         return np.maximum(x, 0)
 
     @staticmethod
-    def _softmax(x):
+    def _softmax(x: np.ndarray) -> np.ndarray:
         """
         Softmax activation function.
 
@@ -174,7 +176,7 @@ class NeuralNetwork():
 
         return np.exp(x)/np.exp(x).sum()
 
-    def _activations(self, input: np.ndarray):
+    def _activations(self, input: np.ndarray) -> np.ndarray:
         """
         Calculates activations through the network layers.
 
@@ -216,7 +218,7 @@ class NeuralNetwork():
 
         return activations
 
-    def predict(self, input: np.ndarray):
+    def predict(self, input: np.ndarray) -> np.ndarray:
         """
         Predicts the output for a given input using the neural network.
 
@@ -233,11 +235,12 @@ class NeuralNetwork():
 
         return self._activations(input)[-1]
 
-    def train(self,
-              data: list[list[np.ndarray, np.ndarray]],
-              n: int,
-              step: float=0.1
-              ):
+    def train(
+            self,
+            data: Union[Tuple[Tuple[np.ndarray, np.ndarray]], Tuple[Tuple[np.ndarray, np.ndarray]]],
+            n: int,
+            step: float=0.1
+            ) -> None:
         """
         Trains the neural network using backpropagation.
 
@@ -275,12 +278,13 @@ class NeuralNetwork():
 
         self._training += n
 
-    def batch_train(self,
-              data: list[list[np.ndarray, np.ndarray]],
-              n: int,
-              batch_size: int=10,
-              step: float=0.1
-              ):
+    def batch_train(
+            self,
+            data: Union[Tuple[Tuple[np.ndarray, np.ndarray]], Tuple[Tuple[np.ndarray, np.ndarray]]],
+            n: int,
+            batch_size: int=10,
+            step: float=0.1
+            ) -> None:
         """
         Trains the neural network using backpropagation.
 
@@ -331,7 +335,12 @@ class NeuralNetwork():
 
         self._training += n
 
-    def backpropagation(self, input, target, step=0.1):
+    def backpropagation(
+            self,
+            input: np.ndarray,
+            target: np.ndarray,
+            step: float=0.1
+            ) -> Tuple[np.ndarray, np.ndarray]:
         """
         Performs backpropagation to update weights and biases based on the input and target output.
 
@@ -365,6 +374,6 @@ class NeuralNetwork():
         return delta_weights, delta_biases
 
     @staticmethod
-    def batchify(x, n):
+    def batchify(x: list, n: int):
         for i in range(0, len(x), n):
             yield x[i:i+n]
