@@ -1,5 +1,8 @@
 from setuptools import setup, find_packages
 
+with open('requirements.txt') as f:
+    required = f.read().splitlines()
+
 setup(
     name='NeuralNetwork',
     version='0.1.4',
@@ -8,5 +11,5 @@ setup(
     author_email='magnus.helliesen@gmail.com',
     description='',
     packages=find_packages(),    
-    install_requires=['numpy == 2.0.0', 'pandas == 2.2.2', 'matplotlib == 3.9.0'],
+    install_requires=required,
 )
