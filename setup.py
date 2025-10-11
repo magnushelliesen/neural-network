@@ -5,7 +5,7 @@ with open('requirements.txt') as f:
 
 setup(
     name='NeuralNetwork',
-    version='0.1.4',
+    version='0.1.5',
     url='https://github.com/magnushelliesen/neural-network.git',
     author='Magnus Kvåle Helliesen',
     author_email='magnus.helliesen@gmail.com',

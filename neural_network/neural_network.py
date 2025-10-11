@@ -3,7 +3,7 @@ By: Magnus Kvåle Helliesen
 """
 
 import numpy as np
-import pandas as pd
+import pandas as pd # type: ignore
 from random import choices
 from typing import Union, List, Tuple
 
@@ -43,12 +43,12 @@ class NeuralNetwork():
         self._n_hidden = n_hidden
         self._dim_output = dim_output
 
-        self._last_input = None
-        self._last_activations = None
+        self._last_input: np.ndarray | None = None
+        self._last_activations: Tuple[np.ndarray , ...] | None = None
 
         # Setup weights and biases
-        self._weights = []
-        self._biases = []
+        self._weights: Tuple[np.ndarray, ...] = tuple()
+        self._biases: Tuple[np.ndarray, ...] = tuple()
 
         # Setup weights and biases from input layer to first hidden layer
         self._weights += (np.random.rand(dim_hidden, dim_input)-0.5)/self.dim_hidden,
@@ -88,35 +88,35 @@ class NeuralNetwork():
         return self._dim_output
 
     @property
-    def weights(self) -> np.ndarray:
+    def weights(self) -> Tuple[np.ndarray, ...]:
         return self._weights
 
     @property
-    def biases(self) -> np.ndarray:
+    def biases(self) -> Tuple[np.ndarray, ...]:
         return self._biases
 
     @property
-    def weights0(self) -> np.ndarray:
+    def weights0(self) -> Tuple[np.ndarray, ...]:
         return self._weights0
 
     @property
-    def biases0(self) -> np.ndarray:
+    def biases0(self) -> Tuple[np.ndarray, ...]:
         return self._biases0
 
     @property
-    def delta_weights(self) -> np.ndarray:
-        return [x-y for x, y in zip(self.weights, self.weights0)]
+    def delta_weights(self) -> Tuple[np.ndarray, ...]:
+        return tuple(x-y for x, y in zip(self.weights, self.weights0))
 
     @property
-    def delta_biases(self) -> np.ndarray:
-        return [x-y for x, y in zip(self.biases, self.biases0)]
+    def delta_biases(self) -> Tuple[np.ndarray]:
+        return tuple(x-y for x, y in zip(self.biases, self.biases0))
 
     @property
-    def last_input(self) -> np.ndarray:
+    def last_input(self) -> np.ndarray | None:
         return self._last_input
 
     @property
-    def last_activations(self) -> Tuple[np.ndarray]:
+    def last_activations(self) -> Tuple[np.ndarray, ...] | None:
         return self._last_activations
 
     def __repr__(self):
@@ -176,7 +176,7 @@ class NeuralNetwork():
 
         return np.exp(x)/np.exp(x).sum()
 
-    def _activations(self, input: np.ndarray) -> np.ndarray:
+    def _activations(self, input: np.ndarray) -> Tuple[np.ndarray, ...]:
         """
         Calculates activations through the network layers.
 
@@ -197,7 +197,7 @@ class NeuralNetwork():
             raise IndexError('Input must be 1d array')
 
         x = input
-        activations = tuple()
+        activations: Tuple[np.ndarray, ...] = tuple()
 
         # Forwardpropagation
         for i, (weights, biases) in enumerate(zip(self.weights, self.biases)):
@@ -260,7 +260,7 @@ class NeuralNetwork():
             random_df = data.sample(n=n, replace=True)
             raise RuntimeError('No support for dataframe yet')
 
-        weights, biases = [x.copy() for x in self.weights], [x.copy() for x in self.biases]
+        weights, biases = tuple(x.copy() for x in self.weights), tuple(x.copy() for x in self.biases)
 
         for input, target in random_data:
             try:
@@ -304,12 +304,12 @@ class NeuralNetwork():
             random_df = data.sample(n=n, replace=True)
             raise RuntimeError('No support for dataframe yet')
 
-        weights, biases = [x.copy() for x in self.weights], [x.copy() for x in self.biases]
+        weights, biases = tuple(x.copy() for x in self.weights), tuple(x.copy() for x in self.biases)
 
         for random_data_batch in list(random_data_batches):
 
-            delta_weights = [np.zeros_like(x) for x in self.weights]
-            delta_biases = [np.zeros_like(x) for x in self.biases]
+            delta_weights = tuple(np.zeros_like(x) for x in self.weights)
+            delta_biases = tuple(np.zeros_like(x) for x in self.biases)
 
             for random_data in random_data_batch:
                 input, target = random_data
@@ -340,7 +340,7 @@ class NeuralNetwork():
             input: np.ndarray,
             target: np.ndarray,
             step: float=0.1
-            ) -> Tuple[np.ndarray, np.ndarray]:
+            ) -> Tuple[List[np.ndarray], List[np.ndarray]]:
         """
         Performs backpropagation to update weights and biases based on the input and target output.
 
