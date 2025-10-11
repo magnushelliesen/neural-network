@@ -160,3 +160,4 @@ cython_debug/
 #.idea/
 
 mnist_data/
+.venv/
