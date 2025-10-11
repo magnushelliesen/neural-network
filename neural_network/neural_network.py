@@ -3,9 +3,10 @@ By: Magnus Kvåle Helliesen
 """
 
 import numpy as np
-import pandas as pd # type: ignore
+import pandas as pd
 from random import choices
-from typing import Union, List, Tuple
+from typing import Union, List, Tuple, Iterator, Any
+from numpy.typing import NDArray
 
 
 class NeuralNetwork():
@@ -43,12 +44,12 @@ class NeuralNetwork():
         self._n_hidden = n_hidden
         self._dim_output = dim_output
 
-        self._last_input: np.ndarray | None = None
-        self._last_activations: Tuple[np.ndarray , ...] | None = None
+        self._last_input: NDArray[np.float64] | None = None
+        self._last_activations: Tuple[NDArray[np.float64] , ...] | None = None
 
         # Setup weights and biases
-        self._weights: Tuple[np.ndarray, ...] = tuple()
-        self._biases: Tuple[np.ndarray, ...] = tuple()
+        self._weights: Tuple[NDArray[np.float64], ...] = tuple()
+        self._biases: Tuple[NDArray[np.float64], ...] = tuple()
 
         # Setup weights and biases from input layer to first hidden layer
         self._weights += (np.random.rand(dim_hidden, dim_input)-0.5)/self.dim_hidden,
@@ -88,42 +89,42 @@ class NeuralNetwork():
         return self._dim_output
 
     @property
-    def weights(self) -> Tuple[np.ndarray, ...]:
+    def weights(self) -> Tuple[NDArray[np.float64], ...]:
         return self._weights
 
     @property
-    def biases(self) -> Tuple[np.ndarray, ...]:
+    def biases(self) -> Tuple[NDArray[np.float64], ...]:
         return self._biases
 
     @property
-    def weights0(self) -> Tuple[np.ndarray, ...]:
+    def weights0(self) -> Tuple[NDArray[np.float64], ...]:
         return self._weights0
 
     @property
-    def biases0(self) -> Tuple[np.ndarray, ...]:
+    def biases0(self) -> Tuple[NDArray[np.float64], ...]:
         return self._biases0
 
     @property
-    def delta_weights(self) -> Tuple[np.ndarray, ...]:
+    def delta_weights(self) -> Tuple[NDArray[np.float64], ...]:
         return tuple(x-y for x, y in zip(self.weights, self.weights0))
 
     @property
-    def delta_biases(self) -> Tuple[np.ndarray]:
+    def delta_biases(self) -> Tuple[NDArray[np.float64], ...]:
         return tuple(x-y for x, y in zip(self.biases, self.biases0))
 
     @property
-    def last_input(self) -> np.ndarray | None:
+    def last_input(self) -> NDArray[np.float64] | None:
         return self._last_input
 
     @property
-    def last_activations(self) -> Tuple[np.ndarray, ...] | None:
+    def last_activations(self) -> Tuple[NDArray[np.float64], ...] | None:
         return self._last_activations
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f'NeuralNetwork({self.dim_input}, {self.dim_hidden}, {self.n_hidden}, {self.dim_output})'
 
     @staticmethod
-    def _sigmoid(x: np.ndarray) -> np.ndarray:
+    def _sigmoid(x: NDArray[np.float64]) -> NDArray[np.float64]:
         """
         Sigmoid activation function.
 
@@ -141,7 +142,7 @@ class NeuralNetwork():
         return 1/(1+np.exp(-x))
 
     @staticmethod
-    def _relu(x: np.ndarray) -> np.ndarray:
+    def _relu(x: NDArray[np.float64]) -> NDArray[np.float64]:
         """
         ReLU activation function.
 
@@ -159,7 +160,7 @@ class NeuralNetwork():
         return np.maximum(x, 0)
 
     @staticmethod
-    def _softmax(x: np.ndarray) -> np.ndarray:
+    def _softmax(x: NDArray[np.float64]) -> NDArray[np.float64]:
         """
         Softmax activation function.
 
@@ -176,7 +177,7 @@ class NeuralNetwork():
 
         return np.exp(x)/np.exp(x).sum()
 
-    def _activations(self, input: np.ndarray) -> Tuple[np.ndarray, ...]:
+    def _activations(self, input: NDArray[np.float64]) -> Tuple[NDArray[np.float64], ...]:
         """
         Calculates activations through the network layers.
 
@@ -197,7 +198,7 @@ class NeuralNetwork():
             raise IndexError('Input must be 1d array')
 
         x = input
-        activations: Tuple[np.ndarray, ...] = tuple()
+        activations: Tuple[NDArray[np.float64], ...] = tuple()
 
         # Forwardpropagation
         for i, (weights, biases) in enumerate(zip(self.weights, self.biases)):
@@ -218,7 +219,9 @@ class NeuralNetwork():
 
         return activations
 
-    def predict(self, input: np.ndarray) -> np.ndarray:
+    def predict(
+            self, input: np.ndarray[Tuple[int], np.dtype[np.float64]]
+            ) -> np.ndarray[Tuple[int], np.dtype[np.float64]]:
         """
         Predicts the output for a given input using the neural network.
 
@@ -237,7 +240,10 @@ class NeuralNetwork():
 
     def train(
             self,
-            data: Union[Tuple[Tuple[np.ndarray, np.ndarray]], Tuple[Tuple[np.ndarray, np.ndarray]]],
+            data: Union[
+                Tuple[Tuple[NDArray[np.float64], NDArray[np.float64]]],
+                Tuple[Tuple[NDArray[np.float64], NDArray[np.float64]]]
+                ],
             n: int,
             step: float=0.1
             ) -> None:
@@ -280,7 +286,10 @@ class NeuralNetwork():
 
     def batch_train(
             self,
-            data: Union[Tuple[Tuple[np.ndarray, np.ndarray]], Tuple[Tuple[np.ndarray, np.ndarray]]],
+            data: Union[
+                Tuple[Tuple[NDArray[np.float64], NDArray[np.float64]]],
+                Tuple[Tuple[NDArray[np.float64], NDArray[np.float64]]]
+                ],
             n: int,
             batch_size: int=10,
             step: float=0.1
@@ -337,10 +346,10 @@ class NeuralNetwork():
 
     def backpropagation(
             self,
-            input: np.ndarray,
-            target: np.ndarray,
+            input: NDArray[np.float64],
+            target: NDArray[np.float64],
             step: float=0.1
-            ) -> Tuple[List[np.ndarray], List[np.ndarray]]:
+            ) -> Tuple[List[NDArray[np.float64]], List[NDArray[np.float64]]]:
         """
         Performs backpropagation to update weights and biases based on the input and target output.
 
@@ -374,6 +383,6 @@ class NeuralNetwork():
         return delta_weights, delta_biases
 
     @staticmethod
-    def batchify(x: list, n: int):
+    def batchify(x: List[Any], n: int) -> Iterator[List[Any]]:
         for i in range(0, len(x), n):
             yield x[i:i+n]
