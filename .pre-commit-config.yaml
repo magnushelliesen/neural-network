@@ -4,4 +4,4 @@ repos:
     hooks:
       - id: mypy
         files: ^neural_network/
-        #args: [--strict] # Example: Add mypy arguments like --strict
+        args: [--strict]
