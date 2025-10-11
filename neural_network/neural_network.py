@@ -368,7 +368,7 @@ class NeuralNetwork():
                 delta_weights[i] -= step*np.outer(delta, input)
             else:
                 delta = delta.dot(self.weights[i+1]).T*activations[i]*(1-activations[i])
-                delta_weights[i] -= step*np.outer(delta, activations[i-1])
+                delta_weights[i] -= -step*np.outer(delta, activations[i-1])
             delta_biases[i] -= step*delta
 
         return delta_weights, delta_biases
