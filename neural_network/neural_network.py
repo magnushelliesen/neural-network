@@ -5,7 +5,7 @@ By: Magnus Kvåle Helliesen
 import numpy as np
 import pandas as pd
 from random import choices
-from typing import Union, List, Tuple, Iterator, Any
+from typing import List, Tuple, Iterator, Any
 from numpy.typing import NDArray
 
 
@@ -54,7 +54,7 @@ class NeuralNetwork:
         self._biases += ((np.random.rand(dim_hidden) - 0.5) / self.dim_hidden,)
 
         # Setup weights and biases between hidden layers
-        for i in range(self.n_hidden - 1):
+        for _ in range(self.n_hidden - 1):
             self._weights += (
                 (np.random.rand(dim_hidden, dim_hidden) - 0.5) / self.dim_hidden,
             )
@@ -246,10 +246,10 @@ class NeuralNetwork:
 
     def train(
         self,
-        data: Union[
-            Tuple[Tuple[NDArray[np.float64], NDArray[np.float64]]],
-            Tuple[Tuple[NDArray[np.float64], NDArray[np.float64]]],
-        ],
+        data: (
+            List[Tuple[NDArray[np.float64], NDArray[np.float64]]]
+            | Tuple[Tuple[NDArray[np.float64], NDArray[np.float64]]]
+        ),
         n: int,
         step: float = 0.1,
     ) -> None:
@@ -266,9 +266,9 @@ class NeuralNetwork:
             Learning rate (default is 0.1).
         """
 
-        if isinstance(data, (list, tuple)):
+        if isinstance(data, (list, tuple)):  # type: ignore
             random_data = choices(data, k=n)
-        elif isinstance(data, pd.DataFrame):
+        elif isinstance(data, pd.DataFrame):  # type: ignore
             random_df = data.sample(n=n, replace=True)
             raise RuntimeError("No support for dataframe yet")
 
@@ -293,10 +293,10 @@ class NeuralNetwork:
 
     def batch_train(
         self,
-        data: Union[
-            Tuple[Tuple[NDArray[np.float64], NDArray[np.float64]]],
-            Tuple[Tuple[NDArray[np.float64], NDArray[np.float64]]],
-        ],
+        data: (
+            List[Tuple[NDArray[np.float64], NDArray[np.float64]]]
+            | Tuple[Tuple[NDArray[np.float64], NDArray[np.float64]]]
+        ),
         n: int,
         batch_size: int = 10,
         step: float = 0.1,
@@ -314,9 +314,9 @@ class NeuralNetwork:
             Learning rate (default is 0.1).
         """
 
-        if isinstance(data, (list, tuple)):
+        if isinstance(data, (list, tuple)):  # type: ignore
             random_data_batches = self.batchify(choices(data, k=n), batch_size)
-        elif isinstance(data, pd.DataFrame):
+        elif isinstance(data, pd.DataFrame):  # type: ignore
             random_df = data.sample(n=n, replace=True)
             raise RuntimeError("No support for dataframe yet")
 
@@ -384,11 +384,11 @@ class NeuralNetwork:
                 delta = activations[i] - target
                 delta_weights[i] -= step * np.outer(delta, activations[i - 1])
             elif i == 0:
-                delta = delta.dot(self.weights[i + 1]).T * (activations[i] > 0)
+                delta = delta.dot(self.weights[i + 1]).T * (activations[i] > 0)  # type: ignore
                 delta_weights[i] -= step * np.outer(delta, input)
             else:
                 delta = (
-                    delta.dot(self.weights[i + 1]).T
+                    delta.dot(self.weights[i + 1]).T  # type: ignore
                     * activations[i]
                     * (1 - activations[i])
                 )
