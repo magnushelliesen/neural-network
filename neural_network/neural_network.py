@@ -266,9 +266,9 @@ class NeuralNetwork:
             Learning rate (default is 0.1).
         """
 
-        if isinstance(data, (list, tuple)):  # type: ignore
+        if isinstance(data, (list, tuple)):
             random_data = choices(data, k=n)
-        elif isinstance(data, pd.DataFrame):  # type: ignore
+        elif isinstance(data, pd.DataFrame):
             random_df = data.sample(n=n, replace=True)
             raise RuntimeError("No support for dataframe yet")
 
@@ -314,9 +314,9 @@ class NeuralNetwork:
             Learning rate (default is 0.1).
         """
 
-        if isinstance(data, (list, tuple)):  # type: ignore
+        if isinstance(data, (list, tuple)):
             random_data_batches = self.batchify(choices(data, k=n), batch_size)
-        elif isinstance(data, pd.DataFrame):  # type: ignore
+        elif isinstance(data, pd.DataFrame):
             random_df = data.sample(n=n, replace=True)
             raise RuntimeError("No support for dataframe yet")
 
@@ -384,11 +384,11 @@ class NeuralNetwork:
                 delta = activations[i] - target
                 delta_weights[i] -= step * np.outer(delta, activations[i - 1])
             elif i == 0:
-                delta = delta.dot(self.weights[i + 1]).T * (activations[i] > 0)  # type: ignore
+                delta = delta.dot(self.weights[i + 1]).T * (activations[i] > 0)
                 delta_weights[i] -= step * np.outer(delta, input)
             else:
                 delta = (
-                    delta.dot(self.weights[i + 1]).T  # type: ignore
+                    delta.dot(self.weights[i + 1]).T
                     * activations[i]
                     * (1 - activations[i])
                 )
