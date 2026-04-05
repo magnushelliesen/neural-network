@@ -16,10 +16,9 @@ I'm considering renaming this project/class "SonOfAnton" (for those who get the 
 
 ![image](https://github.com/magnushelliesen/neural-network/assets/104299371/3aa8d57c-5754-4687-9aef-9b5b6b603ab7)
 
-### Testing
-This repo is set up with two GitHub Actions
-
-1. A [GitHub Action](https://github.com/magnushelliesen/neural-network/blob/main/.github/workflows/pre_commit_checks.yml) that runs unit tests on the class upon PR into main
+## Testing
+This repo is set up with two GitHub Actions:
+1. A [GitHub Action](https://github.com/magnushelliesen/neural-network/blob/main/.github/workflows/run-tests.yml) that runs unit tests on the class upon PR into main
 2. A [GitHub Action](https://github.com/magnushelliesen/neural-network/blob/main/.github/workflows/pre_commit_checks.yml) that runs Mypy and Black upon PR into main
 
 ## Neural network app
