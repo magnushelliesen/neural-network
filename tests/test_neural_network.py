@@ -1,6 +1,5 @@
 import numpy as np
 from neural_network import NeuralNetwork
-import pytest
 
 
 def test_neural_network():
