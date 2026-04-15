@@ -19,7 +19,7 @@ I'm considering renaming this project/class "SonOfAnton" (for those who get the 
 ## Testing
 This repo is set up with two GitHub Actions to make sure I don't merge code that breaks stuff into main:
 1. A [GitHub Action](https://github.com/magnushelliesen/neural-network/blob/main/.github/workflows/run-tests.yml) that runs unit tests on the class upon PR into main
-2. A [GitHub Action](https://github.com/magnushelliesen/neural-network/blob/main/.github/workflows/pre_commit_checks.yml) that runs Mypy and Black upon PR into main
+2. A [GitHub Action](https://github.com/magnushelliesen/neural-network/blob/main/.github/workflows/pre-commit-checks.yml) that runs Mypy and Black upon PR into main
 
 ## Neural network app
 A pre-trained instance of the class is hosted on [Google Cloud Run](https://handwritten-digit-recognizer-app-569320861368.asia-east1.run.app/) and provides a nifty user interface.
